@@ -655,7 +655,7 @@ CMD:unhandcuff(playerid, params[])
     TempVar[targetid][Handcuffed] = false;
     return 1;
 }
-alias:unhandcuff("uncuff");
+alias:unhandcuff("uncuff")
 
 CMD:handcuff(playerid, params[])
 {
@@ -692,7 +692,7 @@ CMD:handcuff(playerid, params[])
     TempVar[targetid][Handcuffed] = true;
     return 1;
 }
-alias:handcuff("cuff");
+alias:handcuff("cuff")
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {

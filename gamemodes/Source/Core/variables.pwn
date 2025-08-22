@@ -626,6 +626,7 @@ enum fInfo
 	RamRaid,
 	WeaponDelivery,
 	ChatColour,
+	FHCColour,
 
 	// Faction Permissions
 	FactionPoliceCall, // Police 911 Calls

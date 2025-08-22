@@ -173,7 +173,7 @@ CMD:aooc(playerid, params[])
     }
     return 1;
 }
-alias:aooc("ao");
+alias:aooc("ao")
 
 CMD:ooc(playerid, params[])
 {
@@ -207,9 +207,9 @@ CMD:ooc(playerid, params[])
 	{
 		TempVar[playerid][LastGlobal] = gettime();
 	}
-    return 1
+    return 1; 
 }
-alias:ooc("o");
+alias:ooc("o")
 
 CMD:blow(playerid, params[])
 {

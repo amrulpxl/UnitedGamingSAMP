@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_RENTALS 7
 #define RENTAL_FEE 100
@@ -48,7 +48,8 @@ hook OnPlayerDisconnect(playerid, reason)
         if(VehicleRented[i] == playerid)
         {
             VehicleRented[i] = INVALID_PLAYER_ID;
-            RespawnVehicle(i);
+            // Lightweight respawn to avoid long callback in disconnect chain
+            SetVehicleToRespawn(i);
         }
     }
     return 1;

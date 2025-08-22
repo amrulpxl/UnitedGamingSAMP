@@ -116,7 +116,7 @@ CMD:signcheque(playerid, params[])
     else SendErrorMessage(playerid, "You are not at the Fort Carson Town Hall.");
     return 1;
 }
-alias:signcheque("signcheck");
+alias:signcheque("signcheck")
 
 CMD:signcode(playerid, params[])
 {

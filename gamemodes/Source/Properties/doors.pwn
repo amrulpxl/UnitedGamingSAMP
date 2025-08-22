@@ -236,7 +236,7 @@ CMD:gate(playerid, params[])
     ToggleGate(playerid, i);
     return 1;
 }
-alias:gate("door", "doors", "gates", "open", "close", "barrier");
+alias:gate("door", "doors", "gates", "open", "close", "barrier")
 
 stock SaveGates()
 {

@@ -7,7 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_ADVERTS 11
 

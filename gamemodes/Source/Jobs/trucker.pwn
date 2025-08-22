@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 #include <YSI\y_ini>
 
 #define     MAX_TRUCKS      6
@@ -398,7 +398,7 @@ public DestroyTruckingJobTruck(truckid)
 
 function UnFreezeP(playerid)
 {
-    TogglePlayerControllable(playerid, 1);
+    TogglePlayerControllable(playerid, true);
     new truckid;
     for(new i = 0; i < MAX_TRUCKS; i++)
     {
@@ -430,7 +430,7 @@ function UnFreezeP(playerid)
 stock FreezePlayer(playerid,time)
 {
     SetTimerEx("UnFreezeP",time,false,"i",playerid);
-    TogglePlayerControllable(playerid, 0);
+    TogglePlayerControllable(playerid, false);
 }
 
 CMD:edittrucker(playerid, params[])

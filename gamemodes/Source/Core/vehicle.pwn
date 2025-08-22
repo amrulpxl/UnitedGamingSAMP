@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_VEHICLE_INVENTORY 10
 
@@ -1401,7 +1401,7 @@ CMD:vehicle(playerid, params[])
     }
     return 1;
 }
-alias:vehicle("v");
+alias:vehicle("v")
 
 Dialog:VehicleScrap(playerid, response, listitem, inputtext[])
 {

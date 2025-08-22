@@ -66,6 +66,7 @@ stock SendDiscordMessage(channel, const message[])
     #endif
 }
 
+forward DCC_OnChannelMessage(DCC_Channel:channel, DCC_User:author, const message[]);
 public DCC_OnChannelMessage(DCC_Channel:channel, DCC_User:author, const message[])
 {
     #if defined dcconnector_included

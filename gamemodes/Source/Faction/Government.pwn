@@ -241,7 +241,7 @@ CMD:department(playerid, params[])
     }
     return 1;
 }
-alias:department("dep", "dept");
+alias:department("dep", "dept")
 
 CMD:operation(playerid, params[])
 {
@@ -264,7 +264,7 @@ CMD:operation(playerid, params[])
         SetPlayerHealthEx(reviveID, 10); 
         SetPlayerTeam(reviveID, PLAYER_ALIVE);
 
-        TogglePlayerControllable(reviveID, 1); 
+        TogglePlayerControllable(reviveID, true); 
 
         StopAnim(reviveID);
 
@@ -513,7 +513,7 @@ CMD:carsign(playerid, params[])
                 fSizeY = -(fSizeY / 2) + 0.2;
                 fSizeZ = -(fSizeZ / 2) + 0.2;
 
-                VehicleCarSign[vehicleid] = Create3DTextLabel(params, 0xFFFFFFFF, 0.0, 0.0, 0.0, 25.0, 0, 0); 
+                VehicleCarSign[vehicleid] = Create3DTextLabel(params, 0xFFFFFFFF, 0.0, 0.0, 0.0, 25.0, 0, false); 
                 Attach3DTextLabelToVehicle(VehicleCarSign[vehicleid], vehicleid, -0.7, fSizeY, fSizeZ); 
 
                 VehicleHasCarSign[vehicleid] = true;
@@ -556,7 +556,7 @@ CMD:megaphone(playerid, params[])
     SendErrorMessage(playerid, "You aren't in a faction vehicle.");
 	return 1;
 }
-alias:megaphone("m");
+alias:megaphone("m")
 
 stock IsNearFactionDuty(playerid)
 {
@@ -706,7 +706,7 @@ CMD:badge(playerid, params[])
     }
     return 1;
 }
-alias:badge("showbadge");
+alias:badge("showbadge")
 
 CMD:offduty(playerid, params[])
 {

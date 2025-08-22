@@ -185,4 +185,4 @@ CMD:injuries(playerid, params[])
     ShowDamages(playerid, targetid);
     return 1;
 }
-alias:injuries("damages", "wounds");
+alias:injuries("damages", "wounds")

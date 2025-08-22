@@ -691,7 +691,7 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, Footer[playerid], 0.3, 1.5);
 	PlayerTextDrawColor(playerid, Footer[playerid], -1);
 	PlayerTextDrawSetOutline(playerid, Footer[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, Footer[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, Footer[playerid], true);
 
 	Blind[playerid] = CreatePlayerTextDraw(playerid, 0.1, 0.1, "_");
 	PlayerTextDrawBackgroundColor(playerid, Blind[playerid], 0x000000FF);
@@ -699,8 +699,8 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, Blind[playerid], 0.5, 49.55);
 	PlayerTextDrawColor(playerid, Blind[playerid], 0x000000FF);
 	PlayerTextDrawSetOutline(playerid, Blind[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, Blind[playerid], 1);
-	PlayerTextDrawUseBox(playerid, Blind[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, Blind[playerid], true);
+	PlayerTextDrawUseBox(playerid, Blind[playerid], true);
 	PlayerTextDrawBoxColor(playerid, Blind[playerid], 0x000000FF);
 	PlayerTextDrawTextSize(playerid, Blind[playerid], 639.5, 0.0);
 
@@ -710,8 +710,8 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, GreenScreen[playerid], 0.5, 49.55);
 	PlayerTextDrawColor(playerid, GreenScreen[playerid], 0x000000FF);
 	PlayerTextDrawSetOutline(playerid, GreenScreen[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, GreenScreen[playerid], 1);
-	PlayerTextDrawUseBox(playerid, GreenScreen[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, GreenScreen[playerid], true);
+    PlayerTextDrawUseBox(playerid, GreenScreen[playerid], true);
 	PlayerTextDrawBoxColor(playerid, GreenScreen[playerid], 0x00FF00FF);
 	PlayerTextDrawTextSize(playerid, GreenScreen[playerid], 639.5, 0.0);
 
@@ -762,9 +762,9 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawColor(playerid, VehicleSpeedo[playerid], -1);
 	PlayerTextDrawBackgroundColor(playerid, VehicleSpeedo[playerid], 255);
 	PlayerTextDrawBoxColor(playerid, VehicleSpeedo[playerid], 100);
-	PlayerTextDrawUseBox(playerid, VehicleSpeedo[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, VehicleSpeedo[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, VehicleSpeedo[playerid], 0);
+	PlayerTextDrawUseBox(playerid, VehicleSpeedo[playerid], true);
+	PlayerTextDrawSetProportional(playerid, VehicleSpeedo[playerid], true);
+	PlayerTextDrawSetSelectable(playerid, VehicleSpeedo[playerid], false);
 	
 	ServerCurrentTime = TextDrawCreate(577.000000, 20.000000, "00:00");
 	TextDrawFont(ServerCurrentTime, 3);
@@ -776,9 +776,9 @@ public OnPlayerConnect(playerid)
 	TextDrawColor(ServerCurrentTime, -1);
 	TextDrawBackgroundColor(ServerCurrentTime, 255);
 	TextDrawBoxColor(ServerCurrentTime, 50);
-	TextDrawUseBox(ServerCurrentTime, 0);
-	TextDrawSetProportional(ServerCurrentTime, 1);
-	TextDrawSetSelectable(ServerCurrentTime, 0);
+	TextDrawUseBox(ServerCurrentTime, false);
+    TextDrawSetProportional(ServerCurrentTime, true);
+    TextDrawSetSelectable(ServerCurrentTime, false);
 	
 	// reset player data
 	static const empty_pinfo[pData];
@@ -957,9 +957,23 @@ public OnPlayerConnect(playerid)
 			SendClientMessageEx(i, COLOR_GREY, "[CONNECT]: %s (%d) has connected to the server.", GetUserName(playerid), playerid);
 		}
 	}
+	if(Player[playerid][IsLoggedIn] == false)
+	{
+		new 
+			query[128], 
+			serial[41];
+			
+		SendClientMessage(playerid, COLOR_LIGHTRED, "WARNING: {FFFFFF}This server may contain explicit content.");
+		SendServerMessage(playerid, "Looking up user data, please wait...");
+		gpci(playerid, serial, sizeof(serial));
+		mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `bans` WHERE `Serial` = '%e' LIMIT 1", serial);
+		mysql_tquery(g_SQL, query, "OnPlayerSerialCheck", "d", playerid);
+	}
 	return 1;
 }
 
+/*
+forward OnPlayerFinishedDownloading(playerid, virtualworld);
 public OnPlayerFinishedDownloading(playerid, virtualworld)
 {
 	if(Player[playerid][IsLoggedIn] == false)
@@ -973,6 +987,7 @@ public OnPlayerFinishedDownloading(playerid, virtualworld)
 	}
 	return 1;
 }
+*/
 
 function OnPlayerSerialCheck(playerid)
 {
@@ -1346,7 +1361,7 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 	{
 		SetPlayerPosEx(playerid, 0, 0, 0);
-		TogglePlayerControllable(playerid, 0);
+		TogglePlayerControllable(playerid, false);
 		return 1;
 	}
 
@@ -3070,7 +3085,7 @@ function OnAddVehFine(playerid, faction, amount, reason[])
 	return 1;
 }
 
-public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	if(!IsValidDynamicObject(objectid)) return 1;
 
@@ -3436,7 +3451,7 @@ public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, respons
     return 1;
 }
 
-public OnPlayerSelectDynamicObject(playerid, STREAMER_TAG_OBJECT objectid, modelid, Float:x, Float:y, Float:z)
+public OnPlayerSelectDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, modelid, Float:x, Float:y, Float:z)
 {
 	CancelEdit(playerid);
 	switch(TempVar[playerid][SelectType])

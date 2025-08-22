@@ -90,7 +90,7 @@ stock UpdateSpectator(playerid)
 		{
 			if(IsPlayerConnected(playerid))
 			{
-				TogglePlayerSpectating(i, 1);
+				TogglePlayerSpectating(i, true);
 				SetPlayerInterior(i,GetPlayerInterior(playerid));
 				SetPlayerVirtualWorld(i,GetPlayerVirtualWorld(playerid));
 

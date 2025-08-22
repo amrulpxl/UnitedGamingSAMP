@@ -8,43 +8,51 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 hook OnPlayerSpawn(playerid)
 {
     new ip[128], string[256];
-	GetPlayerIp(playerid, ip, sizeof ip);
+    GetPlayerIp(playerid, ip, sizeof ip);
 	
     /*if(strcmp(ip, "127.0.0.1", true) == 0)
         return 1;*/
 
-	format(string, sizeof string, "proxy.mind-media.com/block/proxycheck.php?ip=%s", ip);
-	HTTP(playerid, HTTP_GET, string, "", "ProxyCheck");
+    // Free proxy check API (no key required)
+    // Docs: https://ipwhois.io/documentation (ipwhois.app)
+    // We will scan the JSON for '"proxy":true' to warn admins.
+    format(string, sizeof string, "http://ipwhois.app/json/%s", ip);
+    HTTP(playerid, HTTP_GET, string, "", "ProxyCheck");
     return 1;
 }
 
 function ProxyCheck(index, response_code, data[])
 {
-	if(response_code == 200)
+    if(response_code == 200)
     {
-		new name[MAX_PLAYERS], string[256];
-		new ip[16];
+        new name[MAX_PLAYERS], string[256];
+        new ip[16];
 		
 		GetPlayerName(index, name, sizeof(name));
 		GetPlayerIp(index, ip, sizeof ip);
 		
 		if(strcmp(ip, "127.0.0.1", true) == 0)
-			return 1;
-
-		if(data[0] == 'Y')
-		{
-			format(string, sizeof string, "%s may be possibly using a proxy.", name);
-			SendAdminWarning(1, string);
-		}
+			return 1; // Simple JSON scan for proxy/vpn/tor usage flags (handle various formats)
+        if (
+            strfind(data, "\"proxy\":true", true) != -1 ||
+            strfind(data, "\"proxy\":1", true) != -1 ||
+            strfind(data, "\"proxy\":\"yes\"", true) != -1 ||
+            strfind(data, "\"vpn\":true", true) != -1 ||
+            strfind(data, "\"tor\":true", true) != -1
+        )
+        {
+            format(string, sizeof string, "%s may be possibly using a proxy.", name);
+            SendAdminWarning(1, string);
+        }
     }
     else
     {
-		printf("[ERROR]: Proxy check failed for %s. Response Code: %d", GetUserName(index), response_code);
+        printf("[WARN]: Proxy check request did not return 200 for %s. Code: %d", GetUserName(index), response_code);
     }
     return 1;
 }

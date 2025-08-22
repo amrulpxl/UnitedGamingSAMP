@@ -1,5 +1,5 @@
 # UG-RP SA-MP Gamemode
-Based on DC-RP gamemode by Seanny.
+Based on DC-RP gamemode by Seanny, Fixed a lot of errors and warnings. and you need fixed 7 warnings lefts (warning 234: function is deprecated (symbol "CST_SHA256_PassHash") Use BCrypt or better for hashing passwords.) replace it to samp_bcrypt.
 
 ## Giving yourself admin
 You need to create yourself an in-game master account first by registering in-game (use any name).

@@ -816,7 +816,7 @@ stock SaveFaction(id)
 		FactionInfo[id][FactionID]);
 	mysql_tquery(g_SQL, threadSave);
 
-    mysql_format(g_SQL, threadSave, sizeof(threadSave), "UPDATE factions SET Medic = %d, News = %d, Tag = %d, RamRaidPerm = %d, ChatColour = %d, FHCColour, DrugRights = %d, Economy = %d WHERE FactionID = %i LIMIT 1",
+    mysql_format(g_SQL, threadSave, sizeof(threadSave), "UPDATE factions SET Medic = %d, News = %d, Tag = %d, RamRaidPerm = %d, ChatColour = %d, FHCColour = %d, DrugRights = %d, Economy = %d WHERE FactionID = %i LIMIT 1",
         FactionInfo[id][FactionMedic],
         FactionInfo[id][FactionNews],
         FactionInfo[id][FactionTag],
@@ -829,8 +829,9 @@ stock SaveFaction(id)
 	mysql_tquery(g_SQL, threadSave);
 
     mysql_format(g_SQL, threadSave, sizeof(threadSave), "UPDATE factions SET WeaponDelivery = %d WHERE FactionID = %i LIMIT 1",
-        FactionInfo[id][WeaponDelivery]);
-	mysql_tquery(g_SQL, threadSave);
+        FactionInfo[id][WeaponDelivery],
+        FactionInfo[id][FactionID]);
+    mysql_tquery(g_SQL, threadSave);
 
     for(new i = 1; i < MAX_FACTION_RANKS; i++)
     {
@@ -935,10 +936,10 @@ CMD:f(playerid, params[])
 	
 	if(strlen(params) > 70)
 	{
-		SendFactionChat(facid, FactionInfo[factionid][ChatColour], "** (( %s %s%s: %.70s ... )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params); 
-		SendFactionChat(facid, FactionInfo[factionid][ChatColour], "** (( %s %s%s: ... %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params[70]); 
+		SendFactionChat(facid, FactionInfo[facid][ChatColour], "** (( %s %s%s: %.70s ... )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params); 
+		SendFactionChat(facid, FactionInfo[facid][ChatColour], "** (( %s %s%s: ... %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params[70]); 
 	}
-	else SendFactionChat(facid, FactionInfo[factionid][ChatColour], "** (( %s %s%s: %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params);
+	else SendFactionChat(facid, FactionInfo[facid][ChatColour], "** (( %s %s%s: %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params);
     OOC_Log(playerid, params);
 	return 1;
 }
@@ -974,10 +975,10 @@ CMD:fhc(playerid, params[])
 	
 	if(strlen(params) > 70)
 	{
-		SendFactionChat(facid, FactionInfo[factionid][FHCColour], "** (( %s %s%s: %.70s ... )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params); 
-		SendFactionChat(facid, FactionInfo[factionid][FHCColour], "** (( %s %s%s: ... %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params[70]); 
+		SendFactionChat(facid, FactionInfo[facid][FHCColour], "** (( %s %s%s: %.70s ... )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params); 
+		SendFactionChat(facid, FactionInfo[facid][FHCColour], "** (( %s %s%s: ... %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params[70]); 
 	}
-	else SendFactionChat(facid, FactionInfo[factionid][FHCColour], "** (( %s %s%s: %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params);
+	else SendFactionChat(facid, FactionInfo[facid][FHCColour], "** (( %s %s%s: %s )) **", GetPlayerRank(playerid), GetUserName(playerid), badgeStr, params);
     OOC_Log(playerid, params);
 	return 1;
 }
@@ -1594,7 +1595,7 @@ CMD:factionon(playerid, params[])
     }
 	return 1;
 }
-alias:factionon("fon", "members");
+alias:factionon("fon", "members")
 
 CMD:setrank(playerid, params[])
 {

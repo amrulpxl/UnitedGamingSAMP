@@ -72,4 +72,4 @@ CMD:spec(playerid, params[])
     }
 	return 1;
 }
-alias:spec("awp");
+alias:spec("awp")

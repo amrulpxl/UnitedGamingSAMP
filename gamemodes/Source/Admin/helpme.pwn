@@ -7,7 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 enum helpmeInfo
 {
@@ -131,7 +131,7 @@ CMD:denyhelp(playerid, params[])
     }
     return 1;
 }
-alias:denyhelp("dhm");
+alias:denyhelp("dhm")
 
 CMD:accepthelp(playerid, params[])
 {
@@ -166,7 +166,7 @@ CMD:accepthelp(playerid, params[])
     }
     return 1;
 }
-alias:accepthelp("ahm");
+alias:accepthelp("ahm")
 
 CMD:sta(playerid, params[])
 {
@@ -305,7 +305,7 @@ CMD:helpme(playerid, params[])
     SendServerMessage(playerid, "Your request was sent to all online helpers.");
     return 1;
 }
-alias:helpme("ask", "request", "requesthelp", "newbie", "newb");
+alias:helpme("ask", "request", "requesthelp", "newbie", "newb")
 
 CMD:hmabuse(playerid, params[])
 {

@@ -9,7 +9,7 @@
 //
 
 #include <a_http>
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define ANNOUNCE_URL        "monitor.sacnr.com/api/?Action=announce"
 #define LOG_PREFIX          "[SACNR Monitor] "
@@ -26,7 +26,7 @@ hook OnGameModeInit()
 
 stock GetBindIP(ip[], const len)
 {
-    GetServerVarAsString("bind", ip, len);
+    GetConsoleVarAsString("bind", ip, len);
 }
 
 forward Announce();
@@ -39,7 +39,7 @@ public Announce()
         print("[Warning] Bind address empty, can't announce server");
         return 1;
     }
-    format(postData, sizeof(postData), "ipp=%s:%d", ip, GetServerVarAsInt("port"));
+    format(postData, sizeof(postData), "ipp=%s:%d", ip, GetConsoleVarAsInt("port"));
     HTTP(0, HTTP_POST, ANNOUNCE_URL, postData, "OnAnnounced"); // no need for different announce indices
     return 1;
 }

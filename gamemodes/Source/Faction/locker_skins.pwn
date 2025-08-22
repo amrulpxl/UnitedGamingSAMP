@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define SKINS_PER_FACTION 25
 #define MAX_FACTION_SKINS SKINS_PER_FACTION*MAX_FACTIONS

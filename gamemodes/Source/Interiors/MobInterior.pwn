@@ -8,11 +8,12 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 hook OnGameModeInit()
 {
     MobInterior();
+    return 1;
 }
 
 stock MobInterior()

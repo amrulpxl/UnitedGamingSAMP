@@ -170,7 +170,7 @@ CMD:radiolow(playerid, params[])
     }
     return 1;
 }
-alias:radiolow("rlow");
+alias:radiolow("rlow")
 
 CMD:radio(playerid, params[])
 {
@@ -215,4 +215,4 @@ CMD:radio(playerid, params[])
     else SendErrorMessage(playerid, "You do not own a radio, purchase one from a 24/7.");
     return 1;
 }
-alias:radio("r");
+alias:radio("r")

@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 CMD:phone(playerid, params[])
 {
@@ -690,7 +690,7 @@ CMD:pickup(playerid, params[])
     }
     return 1;
 }
-alias:pickup("p");
+alias:pickup("p")
 
 CMD:hangup(playerid, params[])
 {
@@ -719,7 +719,7 @@ CMD:hangup(playerid, params[])
     }
     return 1;
 }
-alias:hangup("h");
+alias:hangup("h")
 
 function HandlePhoneRing(playerid)
 {

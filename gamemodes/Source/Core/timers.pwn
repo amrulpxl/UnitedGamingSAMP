@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new HelpmeCount[MAX_PLAYERS], HelpmeHourCount[MAX_PLAYERS];
 
@@ -93,25 +93,28 @@ task TenMinute[600000]()
 // TickRate: 0.25 Sec
 task VehicleUpdate[500]()
 {
-	new panelsx,doorsx,lightsx,tiresx;
-	for (new p = 0; p < MAX_VEHICLES; p++)
-	{
-		if (Flasher[p] == 1)
-		{
-			if (FlasherState[p] == 1)
-			{
-				GetVehicleDamageStatus(p, panelsx, doorsx, lightsx, tiresx);
-				UpdateVehicleDamageStatus(p, panelsx, doorsx, 4, tiresx);
-				FlasherState[p] = 0;
-			}
-			else
-			{
-				GetVehicleDamageStatus(p, panelsx, doorsx, lightsx, tiresx);
-				UpdateVehicleDamageStatus(p, panelsx, doorsx, 1, tiresx);
-				FlasherState[p] = 1;
-			}
-		}
-	}
+    static vu_idx;
+    const BATCH = 64; // tune as needed
+    new panelsx,doorsx,lightsx,tiresx;
+    for (new cnt = 0; cnt < BATCH; cnt++)
+    {
+        if (vu_idx >= MAX_VEHICLES) vu_idx = 0;
+        new p = vu_idx++;
+        if (Flasher[p] == 1)
+        {
+            GetVehicleDamageStatus(p, panelsx, doorsx, lightsx, tiresx);
+            if (FlasherState[p] == 1)
+            {
+                UpdateVehicleDamageStatus(p, panelsx, doorsx, 4, tiresx);
+                FlasherState[p] = 0;
+            }
+            else
+            {
+                UpdateVehicleDamageStatus(p, panelsx, doorsx, 1, tiresx);
+                FlasherState[p] = 1;
+            }
+        }
+    }
 
 	foreach(new i: Player)
 	{
@@ -275,40 +278,42 @@ task FactionRamRaidCountdown[5000]()
 // TickRate: 2 Sec
 task VehicleDamageUpdate[2000]()
 {
-	for(new i; i < GetVehiclePoolSize(); i++)
-	{
-		if(!HasNoEngine(i))
-		{
-			if(CoreVehicle[i][VehicleEngine] == true)
-			{
-				for(new v; v < MAX_DYN_VEH; v++)
-				{
-					if(VehicleInfo[v][vOwnerID] != 0)
-					{
-						new Float:dist = GetVehicleDistanceFromPoint(v, VehicleInfo[v][vMileagePosX], VehicleInfo[v][vMileagePosY], VehicleInfo[v][vMileagePosZ]);
-						VehicleInfo[v][vMileage] += floatround(dist);
-						GetVehiclePos(v, VehicleInfo[v][vMileagePosX], VehicleInfo[v][vMileagePosY], VehicleInfo[v][vMileagePosZ]);
-						return 1;
-					}
-				}
-				new Float:veh_hp;
-				GetVehicleHealth(i, veh_hp);
-				if(veh_hp < 301)
-				{
-					foreach(new driver: Player)
-					{
-						if(GetPlayerVehicleID(driver) == i && GetPlayerVehicleSeat(driver) == 0)
-						{
-							PrintFooter(driver, "~w~Totalled", 2);
-						}
-					}
-					SetVehicleHealth(i, 301);
-					ToggleVehicleEngine(i, false);
-				}
-			}
-		}
-	}
-	return 1;
+    static vd_idx;
+    const VBATCH = 128; // tune as needed
+    new total = GetVehiclePoolSize();
+    if (vd_idx >= total) vd_idx = 0;
+    for(new cnt; cnt < VBATCH && vd_idx < total; cnt++, vd_idx++)
+    {
+        new i = vd_idx;
+        if(HasNoEngine(i)) continue;
+        if(CoreVehicle[i][VehicleEngine] == true)
+        {
+            for(new v; v < MAX_DYN_VEH; v++)
+            {
+                if(VehicleInfo[v][vOwnerID] != 0)
+                {
+                    new Float:dist = GetVehicleDistanceFromPoint(v, VehicleInfo[v][vMileagePosX], VehicleInfo[v][vMileagePosY], VehicleInfo[v][vMileagePosZ]);
+                    VehicleInfo[v][vMileage] += floatround(dist);
+                    GetVehiclePos(v, VehicleInfo[v][vMileagePosX], VehicleInfo[v][vMileagePosY], VehicleInfo[v][vMileagePosZ]);
+                }
+            }
+            new Float:veh_hp;
+            GetVehicleHealth(i, veh_hp);
+            if(veh_hp < 301)
+            {
+                foreach(new driver: Player)
+                {
+                    if(GetPlayerVehicleID(driver) == i && GetPlayerVehicleSeat(driver) == 0)
+                    {
+                        PrintFooter(driver, "~w~Totalled", 2);
+                    }
+                }
+                SetVehicleHealth(i, 301);
+                ToggleVehicleEngine(i, false);
+            }
+        }
+    }
+    return 1;
 }
 
 ptask PlayerSecondUpdate[1000](i)

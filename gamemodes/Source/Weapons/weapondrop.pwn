@@ -88,7 +88,7 @@ CMD:leavegun(playerid, params[])
 	callcmd::ame(playerid, str);
 	return 1;
 }
-alias:leavegun("lg");
+alias:leavegun("lg")
 
 CMD:grabgun(playerid, params[])
 {
@@ -142,7 +142,7 @@ CMD:grabgun(playerid, params[])
 	else return SendServerMessage(playerid, "You aren't near a dropped weapon.");
 	return 1;
 }
-alias:grabgun("gg");
+alias:grabgun("gg")
 
 CMD:dropinfo(playerid, params[])
 {

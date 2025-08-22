@@ -107,7 +107,7 @@ CMD:stopanim(playerid, params[])
 	StopAnim(playerid);
 	return 1;
 }
-alias:stopanim("sa", "stopanims");
+alias:stopanim("sa", "stopanims")
 
 #define ANIM_MSG 11
 new Animation[][90] =

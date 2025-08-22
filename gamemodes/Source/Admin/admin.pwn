@@ -7,7 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new bool:HHBeingChecked[MAX_PLAYERS char], HHCheckInterior[MAX_PLAYERS], HHCheckVW[MAX_PLAYERS], 
     Float:HHCheckHealth[MAX_PLAYERS], Float:HHCheckArmour[MAX_PLAYERS],
@@ -387,7 +387,7 @@ CMD:adminflush(playerid, params[])
     }
     return 1;
 }
-alias:adminflush("aflush", "aclearchat");
+alias:adminflush("aflush", "aclearchat")
 
 CMD:areaspeak(playerid, params[])
 {
@@ -418,7 +418,7 @@ CMD:areaspeak(playerid, params[])
     }
     return 1;
 }
-alias:areaspeak("adminshout", "areashout", "as");
+alias:areaspeak("adminshout", "areashout", "as")
 
 CMD:a(playerid, params[])
 {
@@ -1550,7 +1550,7 @@ CMD:goincar(playerid, params[])
     }
     return 1;
 }
-alias:goincar("goinveh");
+alias:goincar("goinveh")
 
 CMD:gotocar(playerid, params[])
 {
@@ -1572,7 +1572,7 @@ CMD:gotocar(playerid, params[])
     }
     return 1;
 }
-alias:gotocar("gotoveh");
+alias:gotocar("gotoveh")
 
 CMD:getcar(playerid, params[])
 {
@@ -1883,7 +1883,7 @@ CMD:revive(playerid, params[])
         SetPlayerHealthEx(playerb, 99); 
         SetPlayerTeam(playerb, PLAYER_ALIVE);
 
-        TogglePlayerControllable(playerb, 1); 
+        TogglePlayerControllable(playerb, true); 
 
         SetPlayerChatBubble(playerb, "(( Revived ))", COLOR_WHITE, 21.0, 3000); 
         StopAnim(playerb);
@@ -4584,7 +4584,7 @@ function OnListAdmins(playerid)
         
         TempVar[playerid][RelogID] = Create3DTextLabel("(( CK IN PROGRESS ))", COLOR_WHITE, x, y, z, 20.0, GetPlayerVirtualWorld(playerid), 1);
         Attach3DTextLabelToPlayer(TempVar[playerid][RelogID], playerid, 0.0, 0.0, 0.1);
-        TogglePlayerControllable(playerid, 0);
+        TogglePlayerControllable(playerid, false);
         
         TempVar[targetid][RelogTimer] = SetTimerEx("OnPlayerForceRelog", 1000, true, "i", playerid, GetPVarInt(playerid, "CKAdmin")); 
     }

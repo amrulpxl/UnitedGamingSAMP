@@ -1,7 +1,7 @@
 /*
 ------------------------------------------------------------------------------
 						Script Developed by Sean McElholm
-					Based on MySQL R40 Cache Login Registration
+					Based on MySQL R41-4 Cache Login Registration
 
 * 3rd Party Credits:
 	Y_Less - Foreach and YSI
@@ -32,8 +32,8 @@
 #define		SERVER_GM_TEXT		"UG-RP"
 
 // Server Info
-#define		SERVER_WEBSITE		"dc-rp.com"
-#define		SERVER_TEAMSPEAK	"dc-rp.com"
+#define		SERVER_WEBSITE		"ug-rp.com"
+#define		SERVER_TEAMSPEAK	"ug-rp.com"
 #define		SERVER_DISCORD		"www.sa-mp.com"
 
 #define function%0(%1) forward%0(%1); public%0(%1)
@@ -55,7 +55,7 @@
 #include 	<fixes>
 
 // Anticheat Includes - These go first, according to the instructions.
-#include 	<Anti_cheat_pack>
+#include 	<Rogue-AC.inc>
 
 // Plugin Headers
 #include 	<a_mysql>
@@ -70,13 +70,12 @@
 #endif
 
 // Non Plugin Headers
-#include 	<YSI\y_timers>
-#include 	<YSI\y_hooks>
+#include 	<YSI_Coding\y_timers>
+#include 	<YSI_Coding\y_hooks>
 #include 	<mSelection>
 #include 	<callbacks>
 #include 	<attachments>
 #include 	<evi>
-#include 	<rEac>
 #include 	<mapandreas>
 
 #include 	<libdcrp>
@@ -155,9 +154,7 @@
 
 #include 	"./Source/Advertising/advertisement.pwn"
 
-
 #include 	"./Source/Chat/chat.pwn"
-#include 	"./Source/Chat/announce.pwn"
 #include 	"./Source/Chat/emote.pwn"
 #include 	"./Source/Chat/ooc.pwn"
 
@@ -231,9 +228,9 @@ public OnGameModeInit()
 
 	SetGameModeText(SERVER_GM_TEXT);
 	//ShowPlayerMarkers(PLAYER_MARKERS_MODE_OFF);
-	ShowNameTags(0);
-	DisableInteriorEnterExits();
-	EnableStuntBonusForAll(0);
+    ShowNameTags(false);
+    DisableInteriorEnterExits();
+    EnableStuntBonusForAll(false);
 	//SetNameTagDrawDistance(15.0);
 	Streamer_TickRate(100);
 
@@ -346,7 +343,7 @@ public OnGameModeInit()
 	TextDrawLetterSize(AnimText, 0.260000, 1.299999);
 	TextDrawColor(AnimText, -1);
 	TextDrawSetOutline(AnimText, 1);
-	TextDrawSetProportional(AnimText, 1);
+    TextDrawSetProportional(AnimText, true);
 
 	SendRconCommand("conncookies 1");
 	SendRconCommand("cookielogging 1");

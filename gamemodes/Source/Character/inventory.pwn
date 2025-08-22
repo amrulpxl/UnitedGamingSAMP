@@ -9,7 +9,7 @@
 //
 
 // Min capacity: 30
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_INVENTORY 30
 
@@ -593,4 +593,4 @@ CMD:inventory(playerid, params[])
     PrintInventory(playerid, playerid);
     return 1;
 }
-alias:inventory("inv");
+alias:inventory("inv")

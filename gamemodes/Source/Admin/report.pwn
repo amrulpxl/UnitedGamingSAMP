@@ -7,7 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define EXPIRE_MINUTES 5
 #define COLOR_REPORT 0xFFFF91FF
@@ -245,7 +245,7 @@ CMD:report(playerid, params[])
     }
     return 1;
 }
-alias:report("re");
+alias:report("re")
 
 CMD:cancelreport(playerid,  params[])
 {
@@ -261,7 +261,7 @@ CMD:cancelreport(playerid,  params[])
     if(report)
     {
         TempVar[playerid][SentReport] = 0;
-        SendAdminMessage(COLOR_ORANGE, 1, "[REPORT]: %s (ID: %d) has withdrawn their report (%d).", GetUserName(ReportInfo[reportid][ReportBy]), ReportInfo[reportid][ReportBy], reportid);
+        SendAdminMessage(COLOR_ORANGE, 1, "[REPORT]: %s (ID: %d) has withdrawn their report(s).", GetUserName(playerid), playerid);
         SendClientMessage(playerid, COLOR_YELLOW, "[SYSTEM] {FFFFFF}Your report(s) have been withdrawn.");
     }
     else

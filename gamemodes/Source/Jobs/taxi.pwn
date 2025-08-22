@@ -7,6 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
+#include <YSI_Coding\y_hooks>
 
 new StaticTaxi[4];
 

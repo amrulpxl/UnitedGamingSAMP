@@ -18,7 +18,7 @@
     13. Burgershot
 */
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new bool:HoldingFood[MAX_PLAYERS];
 

@@ -311,7 +311,7 @@ CMD:local(playerid, params[])
 	IC_Log(playerid, params);
 	return 1;
 }
-alias:local("l");
+alias:local("l")
 
 CMD:talk(playerid, params[])
 {
@@ -359,7 +359,7 @@ CMD:talk(playerid, params[])
 	IC_Log(playerid, params);
 	return 1;
 }
-alias:talk("t");
+alias:talk("t")
 
 CMD:low(playerid, params[])
 {
@@ -453,7 +453,7 @@ CMD:whisper(playerid, params[])
 	SendAMe(playerid, string);
 	return 1;
 }
-alias:whisper("w");
+alias:whisper("w")
 
 CMD:blockpm(playerid, params[])
 {
@@ -539,7 +539,7 @@ CMD:shout(playerid, params[])
 	SetPlayerChatBubble(playerid, str, COLOR_WHITE, 20.0, strlen(params)*100);
 	return 1;
 }
-alias:shout("s");
+alias:shout("s")
 
 CMD:my(playerid, params[])
 {

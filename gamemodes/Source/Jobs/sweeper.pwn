@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new bool:SprayMode[MAX_VEHICLES],
 	bool:LightMode[MAX_VEHICLES],

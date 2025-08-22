@@ -21,7 +21,7 @@
 	[Level 1+ Admin & on duty cops] /seizeboombox -> Check if near boombox, if yes then show dialog to confirm if they want to seize.
 */
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_BOOMBOX 25
 #define BOOMBOX_RANGE 25.0 // Default 25 SA-MP meters.
@@ -103,7 +103,7 @@ stock ReloadBoombox(id)
 	BoomboxInfo[id][AreaID] = CreateDynamicCircle(BoomboxInfo[id][PosX], BoomboxInfo[id][PosY], BoomboxInfo[id][AudioRange], .worldid = BoomboxInfo[id][Interior], .interiorid = BoomboxInfo[id][VirtualWorld]);
 }
 
-public OnPlayerEnterDynamicArea(playerid, STREAMER_TAG_AREA areaid)
+public OnPlayerEnterDynamicArea(playerid, STREAMER_TAG_AREA:areaid)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 	if(strlen(CoreVehicle[vehicleid][RadioURL]) < 1)
@@ -122,7 +122,7 @@ public OnPlayerEnterDynamicArea(playerid, STREAMER_TAG_AREA areaid)
 	return 1;
 }
 
-public OnPlayerLeaveDynamicArea(playerid, STREAMER_TAG_AREA areaid)
+public OnPlayerLeaveDynamicArea(playerid, STREAMER_TAG_AREA:areaid)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 	if(strlen(CoreVehicle[vehicleid][RadioURL]) < 1)

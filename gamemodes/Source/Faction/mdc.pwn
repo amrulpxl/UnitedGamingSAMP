@@ -10,7 +10,7 @@
 
 // Feature created by Hansrutger, adapted for DC-RP by Seanny
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 //internals
 
@@ -184,8 +184,8 @@ CreateMDCBackground(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][47], 0.5, 20);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][47], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][47], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][47], 1);
-	PlayerTextDrawUseBox(playerid, Players[playerid][pText][47], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][47], true);
+	PlayerTextDrawUseBox(playerid, Players[playerid][pText][47], true);
 	PlayerTextDrawBoxColor(playerid, Players[playerid][pText][47], 102);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][47], 476, 0.0);
 	
@@ -195,8 +195,8 @@ CreateMDCBackground(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][48], 0.5, 1.9);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][48], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][48], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][48], 1);
-	PlayerTextDrawUseBox(playerid, Players[playerid][pText][48], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][48], true);
+	PlayerTextDrawUseBox(playerid, Players[playerid][pText][48], true);
 	PlayerTextDrawBoxColor(playerid, Players[playerid][pText][48], 0x00BFFF88);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][48], 476, 0.0);
 	
@@ -207,7 +207,7 @@ CreateMDCBackground(playerid)
 	PlayerTextDrawColor(playerid, Players[playerid][pText][49], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][49], 1);
 	PlayerTextDrawAlignment(playerid, Players[playerid][pText][49], 2);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][49], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][49], true);
 }
 
 SetMDCHeader(playerid, text[])
@@ -223,9 +223,9 @@ CreateMDCBackButton(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][50], 0.3, 1.5);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][50], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][50], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][50], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][50], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][50], 185, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][50], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][50], true);
 }
 
 ShowMDCBackButton(playerid)
@@ -249,9 +249,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][51], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][51], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][51], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][51], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][51], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][51], 450, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][51], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][51], true);
 	
 	b += e;
 	Players[playerid][pText][52] = CreatePlayerTextDraw(playerid, a, b, "Option 2");
@@ -260,9 +260,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][52], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][52], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][52], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][52], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][52], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][52], 450, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][52], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][52], true);
 	
 	b += e;
 	Players[playerid][pText][53] = CreatePlayerTextDraw(playerid, a, b, "Option 3");
@@ -271,9 +271,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][53], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][53], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][53], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][53], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][53], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][53], 450, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][53], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][53], true);
 	
 	b += e;
 	Players[playerid][pText][54] = CreatePlayerTextDraw(playerid, a, b, "Option 4");
@@ -282,9 +282,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][54], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][54], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][54], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][54], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][54], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][54], 450, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][54], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][54], true);
 	
 	b += e;
 	Players[playerid][pText][55] = CreatePlayerTextDraw(playerid, a, b, "Option 5");
@@ -293,9 +293,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][55], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][55], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][55], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][55], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][55], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][55], 450, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][55], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][55], true);
 
 	a = 180;
 	b = 210;
@@ -306,7 +306,7 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][56], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][56], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][56], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][56], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][56], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][56], a + 150, 10.0);
 	
 	b += e;
@@ -316,9 +316,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][57], 0.2, 1.0);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][57], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][57], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][57], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][57], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][57], a + 150, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][57], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][57], true);
 	
 	a = 180;
 	b = 260;
@@ -329,7 +329,7 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][58], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][58], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][58], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][58], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][58], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][58], a + 150, 10.0);
 	
 	b += e;
@@ -339,9 +339,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][59], 0.2, 1.0);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][59], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][59], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][59], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][59], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][59], a + 150, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][59], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][59], true);
 	
 	a = 180;
 	b = 310;
@@ -352,7 +352,7 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][60], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][60], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][60], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][60], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][60], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][60], a + 150, 10.0);
 	
 	b += e;
@@ -362,9 +362,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][61], 0.2, 1.0);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][61], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][61], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][61], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][61], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][61], a + 150, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][61], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][61], true);
 	
 	a = 365;
 	b = 210;
@@ -375,7 +375,7 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][62], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][62], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][62], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][62], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][62], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][62], a + 100, 10.0);
 	
 	b += e;
@@ -385,9 +385,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][63], 0.2, 1.0);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][63], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][63], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][63], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][63], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][63], a + 100, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][63], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][63], true);
 	
 	a = 365;
 	b = 260;
@@ -398,7 +398,7 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][64], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][64], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][64], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][64], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][64], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][64], a + 100, 10.0);
 	
 	b += e;
@@ -408,9 +408,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][65], 0.2, 1.0);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][65], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][65], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][65], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][65], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][65], a + 100, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][65], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][65], true);
 	
 	a = 375;
 	b = 325;
@@ -420,9 +420,9 @@ CreateMDCType_Menu(playerid)
 	PlayerTextDrawLetterSize(playerid, Players[playerid][pText][66], 0.3, 1.2);
 	PlayerTextDrawColor(playerid, Players[playerid][pText][66], -1);
 	PlayerTextDrawSetOutline(playerid, Players[playerid][pText][66], 1);
-	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][66], 1);
+	PlayerTextDrawSetProportional(playerid, Players[playerid][pText][66], true);
 	PlayerTextDrawTextSize(playerid, Players[playerid][pText][66], a + 75, 10.0);
-	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][66], 1);
+	PlayerTextDrawSetSelectable(playerid, Players[playerid][pText][66], true);
 }
 
 ShowMDCType_Menu(playerid, title[], opt1[], opt2[], opt3[], opt4[], opt5[])
@@ -466,7 +466,7 @@ ShowMDCType_Menu(playerid, title[], opt1[], opt2[], opt3[], opt4[], opt5[])
 	return 1;
 }
 
-ShowMDCType_Quest(playerid, title[], quest1[], ans1[], quest2[], ans2[], quest3[], ans3[], sideq1[], sidea1[], sideq2[], sidea2[], button[], selectable = 1)
+ShowMDCType_Quest(playerid, title[], quest1[], ans1[], quest2[], ans2[], quest3[], ans3[], sideq1[], sidea1[], sideq2[], sidea2[], button[], bool:selectable = true)
 {
 	HideMDC(playerid);
 	ShowMDCBackground(playerid);
@@ -783,7 +783,7 @@ HandleButtonPush(playerid)
 			}
 			else
 			{
-				ShowMDCType_Quest(playerid, "Plate Information", "Plate:", VehicleInfo[id][vPlates], "Model:", ReturnVehicleModelName(VehicleInfo[id][vModel]), "Owner:", "None/Company", "Alarm:", (VehicleInfo[id][vAlarm] ? "Yes" : "No"), "", "", "", 0);
+				ShowMDCType_Quest(playerid, "Plate Information", "Plate:", VehicleInfo[id][vPlates], "Model:", ReturnVehicleModelName(VehicleInfo[id][vModel]), "Owner:", "None/Company", "Alarm:", (VehicleInfo[id][vAlarm] ? "Yes" : "No"), "", "", "", false);
 				ShowMDCBackButton(playerid);
 			}
 		}
@@ -820,7 +820,7 @@ HandleButtonPush(playerid)
 				new zone[128];
 				GetLocation(HouseInfo[id][HouseExteriorX], HouseInfo[id][HouseExteriorY], HouseInfo[id][HouseExteriorZ], zone, sizeof zone);
 
-				ShowMDCType_Quest(playerid, "Property Information", "Address:", HouseInfo[id][HouseAddress], "Owner:", "No one", "Location:", zone, "", "", "", "", "", 0);
+				ShowMDCType_Quest(playerid, "Property Information", "Address:", HouseInfo[id][HouseAddress], "Owner:", "No one", "Location:", zone, "", "", "", "", "", false);
 				ShowMDCBackButton(playerid);
 			}
 		}
@@ -1012,7 +1012,7 @@ ViewCitizenInfo(playerid)
 		new pname[MAX_PLAYER_NAME];
 		format(pname, sizeof(pname), "%s", GetUserName(pid));
 
-		ShowMDCType_Quest(playerid, "Citizen Information", "Full name:", pname, "Gender:", gender, "", "", "", "", "", "", "", 0);
+		ShowMDCType_Quest(playerid, "Citizen Information", "Full name:", pname, "Gender:", gender, "", "", "", "", "", "", "", false);
 		ShowMDCBackButton(playerid);
 	}
 }
@@ -1081,7 +1081,7 @@ ViewCitizenLicenses(playerid)
 			flylic = "No";
 		}
 
-		ShowMDCType_Quest(playerid, "Licenses & Certificates", "Driving:", drivelic, "Weapon:", weplic, "Flying:", flylic, "", "", "", "", "", 0);
+		ShowMDCType_Quest(playerid, "Licenses & Certificates", "Driving:", drivelic, "Weapon:", weplic, "Flying:", flylic, "", "", "", "", "", false);
 		ShowMDCBackButton(playerid);
 	}
 }
@@ -1218,7 +1218,7 @@ public OnFindCitizenLics(playerid)
 		flyinglic = "No";
 	}
 
-	ShowMDCType_Quest(playerid, "Licenses & Certificates", "General:", generalic, "Weapon:", weaponlic, "Flying:", flyinglic, "", "", "", "", "", 0);
+	ShowMDCType_Quest(playerid, "Licenses & Certificates", "General:", generalic, "Weapon:", weaponlic, "Flying:", flyinglic, "", "", "", "", "", false);
 	ShowMDCBackButton(playerid);
 	return 1;
 }
@@ -1477,7 +1477,7 @@ public OnSerialSearch(playerid)
 	cache_get_value(0, "WeaponName", wepname, sizeof wepname);
 	cache_get_value(0, "Date", purchasedate, sizeof purchasedate);
 	
-	ShowMDCType_Quest(playerid, "Serial Number Search", "Information:", info, "Owner:", TrimName(pname), "Type:", wepname, "Serial:", serial, "Date:", purchasedate, "", 0);
+	ShowMDCType_Quest(playerid, "Serial Number Search", "Information:", info, "Owner:", TrimName(pname), "Type:", wepname, "Serial:", serial, "Date:", purchasedate, "", false);
 	ShowMDCBackButton(playerid);
 	return 1;
 }
@@ -1491,7 +1491,7 @@ public OnAddressSearchOwner(playerid, cid)
 	
 	new zone[128];
 	GetLocation(HouseInfo[cid][HouseExteriorX], HouseInfo[cid][HouseExteriorY], HouseInfo[cid][HouseExteriorZ], zone, sizeof zone);
-	ShowMDCType_Quest(playerid, "Property Information", "Address:", HouseInfo[cid][HouseAddress], "Owner:", pname, "Location:", zone, "", "", "", "", "", 0);
+	ShowMDCType_Quest(playerid, "Property Information", "Address:", HouseInfo[cid][HouseAddress], "Owner:", pname, "Location:", zone, "", "", "", "", "", false);
 	ShowMDCBackButton(playerid);
 	return 1;
 }
@@ -1503,7 +1503,7 @@ public OnPlateSearchOwner(playerid, vehicle)
 	cache_get_value(0, "Name", pname, MAX_PLAYER_NAME);
 	format(pname, sizeof(pname), "%s", TrimName(pname));
 	
-	ShowMDCType_Quest(playerid, "Plate Information", "Plate:", VehicleInfo[vehicle][vPlates], "Model:", ReturnVehicleModelName(VehicleInfo[vehicle][vModel]), "Owner:", pname, "Alarm:", (VehicleInfo[vehicle][vAlarm] ? "Yes" : "No"), "", "", "", 0);
+	ShowMDCType_Quest(playerid, "Plate Information", "Plate:", VehicleInfo[vehicle][vPlates], "Model:", ReturnVehicleModelName(VehicleInfo[vehicle][vModel]), "Owner:", pname, "Alarm:", (VehicleInfo[vehicle][vAlarm] ? "Yes" : "No"), "", "", "", false);
 	ShowMDCBackButton(playerid);
 	return 1;
 }
@@ -1538,7 +1538,7 @@ public OnFindCitizenInfo(playerid)
 	new pname[MAX_PLAYER_NAME];
 	format(pname, sizeof(pname), "%s", TrimName(name));
 
-	ShowMDCType_Quest(playerid, "Citizen Information", "Full name:", pname, "Origin", origin, "Gender", gender, "Born", born, "", "", "", 0);
+	ShowMDCType_Quest(playerid, "Citizen Information", "Full name:", pname, "Origin", origin, "Gender", gender, "Born", born, "", "", "", false);
 	ShowMDCBackButton(playerid);
 	return 1;
 }
@@ -1617,7 +1617,7 @@ public OnAdvancedPhone(playerid)
 				
 				new numberStr[32];
 				format(numberStr, sizeof(numberStr), "%i", number);
-				ShowMDCType_Quest(playerid, title, "Type:", "Payphone", "Number:", numberStr, "Location:", ReturnLocationEx(Payphones[i][ppX], Payphones[i][ppY], Payphones[i][ppZ]), "", "", "", "", "", 0);
+				ShowMDCType_Quest(playerid, title, "Type:", "Payphone", "Number:", numberStr, "Location:", ReturnLocationEx(Payphones[i][ppX], Payphones[i][ppY], Payphones[i][ppZ]), "", "", "", "", "", false);
 				ShowMDCBackButton(playerid);
 				return 1;
 			}

@@ -8,7 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 new bool:RequestingNameChange[MAX_PLAYERS],
     RequestingNameChangeName[MAX_PLAYERS][MAX_PLAYER_NAME+1];
@@ -487,7 +487,7 @@ CMD:apperance(playerid, params[])
     mysql_tquery(g_SQL, string);
     return 1;
 }
-alias:apperance("attributes");
+alias:apperance("attributes")
 
 CMD:describe(playerid, params[])
 {
@@ -509,7 +509,7 @@ CMD:describe(playerid, params[])
     else SendClientMessageEx(playerid, COLOR_PURPLE, "%s's apperance: %s", GetRPName(targetid), PlayerInfo[targetid][pApperance]);
     return 1;
 }
-alias:describe("examine");
+alias:describe("examine")
 
 stock ShowStats(playerid, targetid)
 {
@@ -748,7 +748,7 @@ CMD:logout(playerid, params[])
 	
 	TempVar[playerid][RelogID] = Create3DTextLabel("(( LOGGING OUT ))", COLOR_WHITE, x, y, z, 20.0, GetPlayerVirtualWorld(playerid), 1);
 	Attach3DTextLabelToPlayer(TempVar[playerid][RelogID], playerid, 0.0, 0.0, 0.1);
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	
 	TempVar[playerid][RelogTimer] = SetTimerEx("OnPlayerRelog", 1000, true, "i", playerid); */
     return 1;
@@ -800,7 +800,7 @@ CMD:showlicenses(playerid, params[])
     SendMe(playerid, string);
     return 1;
 }
-alias:showlicenses("showlicense");
+alias:showlicenses("showlicense")
 
 CMD:drivingexam(playerid, params[])
 {
@@ -848,7 +848,7 @@ CMD:servertime(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GREY, "Server Time: {FFFFFF}%s", GetDateTime());
 	return 1;
 }
-alias:servertime("stime");
+alias:servertime("stime")
 
 CMD:clearchat(playerid, params[])
 {
@@ -930,7 +930,7 @@ CMD:stopaudio(playerid, params[])
     StopAudioStreamForPlayer(playerid);
     return 1;
 }
-alias:stopaudio("fixr");
+alias:stopaudio("fixr")
 
 CMD:stuck(playerid, params[])
 {
@@ -1253,7 +1253,7 @@ CMD:masteraccount(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD4, "Name Changes:[%d], Number Changes:[%d]", Player[playerid][NameChanges], Player[playerid][NumberChanges]);
     return 1;
 }
-alias:masteraccount("ma");
+alias:masteraccount("ma")
 
 CMD:rollwindow(playerid, params[])
 {
@@ -1339,7 +1339,7 @@ CMD:rollwindow(playerid, params[])
     else SendErrorMessage(playerid, "You are not the driver of this vehicle.");
     return 1;
 }
-alias:rollwindow("rw");
+alias:rollwindow("rw")
 
 CMD:blindfold(playerid, params[])
 {
@@ -1772,7 +1772,7 @@ CMD:removecp(playerid, params[])
     DisablePlayerCheckpoint(playerid);
     return 1;
 }
-alias:removecp("rcp");
+alias:removecp("rcp")
 
 stock ShowWeapons(playerid, targetid)
 {
@@ -2083,7 +2083,7 @@ CMD:deposit(playerid, params[])
     else SendErrorMessage(playerid, "You are not inside a business.");
     return 1;
 }
-alias:deposit("bank");
+alias:deposit("bank")
 
 CMD:balance(playerid, params[])
 {
@@ -2670,7 +2670,7 @@ CMD:respawnme(playerid, params[])
         if(TempVar[playerid][KillTime] >= 1)
             return SendErrorMessage(playerid, "The timer has not completed yet, please wait %d seconds.", TempVar[playerid][KillTime]);
 
-        TogglePlayerControllable(playerid, 1); 
+        TogglePlayerControllable(playerid, true); 
         SetPlayerTeam(playerid, PLAYER_ALIVE);
 
         SetPlayerChatBubble(playerid, "(( Respawned ))", COLOR_WHITE, 21.0, 3000); 
