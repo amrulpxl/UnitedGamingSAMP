@@ -967,7 +967,7 @@ Dialog:DIALOG_HELP_MAIN(playerid, response, listitem, inputtext[])
         {
             SendClientMessage(playerid, COLOR_GREEN, "______________________________________________________");
             SendClientMessage(playerid, COLOR_LIGHTBLUE, "General Help:{FFFFFF} Type a command for more information.");
-            SendClientMessage(playerid, COLOR_GRAD5, "Commands: /admins, /helpers, /report, /pay, /isafk, /time, /removecp (/rcp), /weapons");
+            SendClientMessage(playerid, COLOR_GRAD5, "Commands: /admins, /helpers, /report, /pay, /isafk, /time, /removecp, /weapons");
             SendClientMessage(playerid, COLOR_GRAD5, "Commands: /leavegun, /grabgun, /enter, /exit, /mask, /buy, /setchannel, /accept, /stuck");
             SendClientMessage(playerid, COLOR_GRAD4, "Commands: /respawnme, /setspawn, /setstation, /lock, /apperance, /describe, /deposit");
             SendClientMessage(playerid, COLOR_GRAD4, "Commands: /withdraw, /balance, /mylicenses, /showlicenses, /drivingexam, /door, /gate"); 
@@ -1772,7 +1772,6 @@ CMD:removecp(playerid, params[])
     DisablePlayerCheckpoint(playerid);
     return 1;
 }
-alias:removecp("rcp")
 
 stock ShowWeapons(playerid, targetid)
 {

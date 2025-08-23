@@ -7,6 +7,7 @@
 //  This document may not be reproduced or transmitted in any form
 //  without the consent of United Gaming LLC.
 //
+#include <YSI_Coding\y_hooks>
 
 new TasedRecently[MAX_PLAYERS];
 new ChangePassCB[MAX_PLAYERS][64];
@@ -17,12 +18,6 @@ ptask TaserTimer[1000](playerid)
 	{
 		TasedRecently[playerid]--;
 	}
-	return 1;
-}
-
-public OnPlayerStreamIn(playerid, forplayerid)
-{
-	
 	return 1;
 }
 
@@ -43,8 +38,9 @@ stock ExecuteAcronymAction(playerid, text[])
 	}
 }
 
-public OnPlayerText(playerid, text[])
+hook OnPlayerText(playerid, text[])
 {
+	printf("[DEBUG] OnPlayerText called - Player: %d, Text: %s", playerid, text);
 	new string[256];
 	if(Player[playerid][IsLoggedIn] == true)
 	{
@@ -560,7 +556,7 @@ public OnPlayerText(playerid, text[])
 		format(logString, sizeof(logString), "%s (IP: %s AccountID: %d CharacterID: %d): %s", GetUserName(playerid), GetUserIP(playerid), Player[playerid][ID], PlayerInfo[playerid][pCharacterID], text);
 		DBLog("LocalChat", logString);
 	}
-	return 0;
+	return 1;
 }
 
 stock PM_Log(playerid, reciever, text[])
@@ -675,7 +671,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	return 1;
 }
 
-public OnPlayerConnect(playerid)
+hook OnPlayerConnect(playerid)
 {
 	SendRconCommand("reloadbans");
 	SendServerMessage(playerid, "Loading server, please wait...");
@@ -1061,7 +1057,7 @@ function OnPlayerIPCheck(playerid)
 	return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason)
+hook OnPlayerDisconnect(playerid, reason)
 {
 	new reasonString[20], string[128];
 	switch(reason)
@@ -1145,6 +1141,7 @@ public OnPlayerDisconnect(playerid, reason)
 	mysql_format(g_SQL, string, sizeof string, "UPDATE `players` SET `IsLoggedIn` = 0 WHERE `id` = %d LIMIT 1", Player[playerid][ID]);
     mysql_tquery(g_SQL, string);
 	Player[playerid][IsLoggedIn] = false;
+	printf("[LOGIN] Player %d (%s) IsLoggedIn=0 on disconnect", playerid, GetUserName(playerid));
 
 	foreach(new i: Player)
 	{
@@ -1361,7 +1358,7 @@ stock GiveSavedWeapons(playerid)
 	}
 }
 
-public OnPlayerSpawn(playerid)
+hook OnPlayerSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))
 	{
@@ -1395,7 +1392,7 @@ public OnPlayerSpawn(playerid)
 	return 1;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+hook OnPlayerDeath(playerid, killerid, reason)
 {
 	SetPlayerTeam(playerid, PLAYER_DEAD);
 	UpdatePlayerDeaths(playerid);
@@ -2026,6 +2023,7 @@ function OnCharacterSelect(playerid, listitem)
 	}
 
 	Player[playerid][IsLoggedIn] = true;
+	printf("[LOGIN] Player %d (%s) IsLoggedIn=1 after character load branch", playerid, GetUserName(playerid));
 	mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `IsLoggedIn` = 1 WHERE `id` = %d LIMIT 1", Player[playerid][ID]);
 	mysql_tquery(g_SQL, query);
 
@@ -2100,6 +2098,7 @@ function FinalizeLogin(playerid)
 	mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `IsLoggedIn` = 1 WHERE `id` = %d LIMIT 1", Player[playerid][ID]);
     mysql_tquery(g_SQL, query);
 	Player[playerid][IsLoggedIn] = true;
+	printf("[LOGIN] Player %d (%s) IsLoggedIn=1 via FinalizeLogin", playerid, GetUserName(playerid));
 
 	// spawn the player to their last saved position after login
 	SetSpawnInfo(playerid, NO_TEAM, 0, Player[playerid][X_Pos], Player[playerid][Y_Pos], Player[playerid][Z_Pos], Player[playerid][A_Pos], 0, 0, 0, 0, 0, 0);
@@ -2107,7 +2106,7 @@ function FinalizeLogin(playerid)
 	return 1;
 }
 
-public OnPlayerRequestClass(playerid, classid)
+hook OnPlayerRequestClass(playerid, classid)
 {
 	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, DEFAULT_POS_A, 0, 0, 0, 0, 0, 0);
 	SpawnPlayer(playerid);
@@ -2129,7 +2128,7 @@ function OnRubberBullet(playerid)
 }
 
 
-public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	if(!IsPlayerConnected(playerid)) return 0;
 	if(!IsPlayerConnected(issuerid)) return 0;
@@ -2371,7 +2370,7 @@ stock GhostHackerAction(playerid)
 	}
 }
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	if(hittype == BULLET_HIT_TYPE_PLAYER)
 	{
@@ -2601,6 +2600,7 @@ function OnPlayerDead(playerid, killerid, reason)
 	SetPlayerVirtualWorld(playerid, 0); 
 	
 	Player[playerid][IsLoggedIn] = false;
+	printf("[LOGIN] Player %d (%s) IsLoggedIn=0 on relog", playerid, GetUserName(playerid));
 
 	static const empty_pinfo[pData];
 	PlayerInfo[playerid] = empty_pinfo;
@@ -2710,7 +2710,7 @@ ptask MoneyCheatCheck[1000](playerid)
 	}
 }
 
-public OnPlayerUpdate(playerid)
+hook OnPlayerUpdate(playerid)
 {
 	if(Player[playerid][AdminLevel] >= 1 && TempVar[playerid][AdminDuty] == true)
 		SetPlayerHealth(playerid, 999);
@@ -2855,7 +2855,7 @@ ptask EngineKeyTimer[1000](playerid)
 	return 1;
 }
 
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(RELEASED(KEY_NO) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER && KeyActionTimer[playerid] < 1)
 	{
@@ -2891,68 +2891,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
-{
-	if(Player[playerid][IsLoggedIn] == false && strcmp(cmd, "starttest", true)) // If the player is not logged in and also not using /starttest
-		return SendErrorMessage(playerid, "You are not logged in."), 0;
-	
-	if(strfind(params, "|") != -1 || strfind(params, "\r") != -1 || strfind(params, "\n") != -1)
-		return SendErrorMessage(playerid, "You cannot use special characters in commands."), 0;
-
-	if(stringContainsIP(params) && Player[playerid][AdminLevel] < 1)
-	{
-		new string[256];
-		format(string, sizeof string, "%s (%d) may be server advertising: /%s %s", GetUserName(playerid), playerid, cmd, params);
-		SendAdminWarning(1, string);
-		format(string, sizeof string, "%s (IP: %s AccountID: %s) may be server advertising: /%s %s", GetUserName(playerid), GetUserIP(playerid), Player[playerid][ID], cmd, params);
-		DBLog("ServerAd", string);
-	}
-
-	if(strlen(params) > 0)
-	{
-		printf("[cmd] [%s]: /%s %s", GetUserName(playerid), cmd, params);
-	}
-	else printf("[cmd] [%s]: /%s", GetUserName(playerid), cmd);
-	return 1;
-}
-
-public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags) 
-{
-	if(TempVar[playerid][IdleTime] > 0)
-	{
-		TempVar[playerid][IdleTime] = 0; // If they're talking, they can't possibly be AFK.
-	}
-    if(result == -1)
-	{
-		if(strlen(cmd) > 28) // Preventing long bad commands from returning default message;
-		{
-			SendErrorMessage(playerid, "Sorry, that command doesn't exist. Use {%06x}/help{FFFFFF} or {%06x}/helpme{FFFFFF} if you need assistance.", COLOR_LIGHTRED >>> 8, COLOR_LIGHTRED >>> 8); 
-		}	
-		else 
-		{
-			SendErrorMessage(playerid, "Sorry, the command \"/%s\" doesn't exist. Use {%06x}/help{FFFFFF} or {%06x}/helpme{FFFFFF} if you need assistance.", cmd, COLOR_LIGHTRED >>> 8, COLOR_LIGHTRED >>> 8);
-		}
-	}
-	else
-	{
-		new string[256], query[512];
-		if(strlen(params) > 0)
-		{
-			format(string, sizeof string, "[%s(%s) IP: %s AccountID: %d]: /%s %s", GetUserName(playerid), GetMasterName(playerid), GetUserIP(playerid), PlayerInfo[playerid][pCharacterID], cmd, params);
-		}
-		else
-		{
-			format(string, sizeof string, "[%s(%s) IP: %s AccountID: %d]: /%s", GetUserName(playerid), GetMasterName(playerid), GetUserIP(playerid), PlayerInfo[playerid][pCharacterID], cmd);
-		}
-		WriteLog("Logs/cmd.log", string);
-		DBLog("Command", string);
-		mysql_format(g_SQL, query, sizeof query, "INSERT INTO `cmd_log` (`AccountID`, `UserName`, `Command`, `Params`, `Timestamp`) VALUES (%d, '%e', '%e', '%e', '%d')", Player[playerid][ID], GetUserName(playerid), cmd, params, gettime());
-		mysql_tquery(g_SQL, query);
-	}
-    return 1; 
-}
-
-public OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if(newstate == PLAYER_STATE_ONFOOT)
 	{
@@ -3670,12 +3609,12 @@ public OnRconLoginAttempt(ip[], password[], success)
     return 1;
 }
 
-public OnVehicleMod(playerid, vehicleid, componentid)
+hook OnVehicleMod(playerid, vehicleid, componentid)
 {
 	return 1;
 }
 
-public OnPlayerEnterCheckpoint(playerid)
+hook OnPlayerEnterCheckpoint(playerid)
 {
 	switch(TempVar[playerid][CheckpointType])
 	{

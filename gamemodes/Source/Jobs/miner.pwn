@@ -8,18 +8,7 @@
 //  without the consent of United Gaming LLC.
 //
 
-#include <YSI\y_hooks.inc>
-
-new gRocks, gGold, gIron;
-new gCrudeOil, gPetrol, gDiesel;
-new gAviationFuel, gChemicals, gMalt;
-new gDrinks, gFruit, gWood;
-
-new gPetrolCooldown, gDieselCooldown;
-
-new bool:gEconomyReady = false;
-
-#define MAX_CRUDE 100
+#include <YSI_Coding\y_hooks>
 
 new Float:MinerPos[][3] =
 {
@@ -33,61 +22,128 @@ new bool:MinerUsed[5] = false;
 new MinerBomb[5];
 new MinerRock[5];
 
-#define Econ_File "Economy.ini"
+new gRocks, gGold, gIron;
+new gCrudeOil, gPetrol, gDiesel;
+new gAviationFuel, gChemicals, gMalt;
+new gDrinks, gFruit, gWood;
+
+new gPetrolCooldown, gDieselCooldown;
+new bool:gEconomyReady = false;
+
+#define MAX_CRUDE 100
+#define ECONOMY_TABLE "economy"
+
+stock EconomyTable()
+{
+    new q[512];
+    format(q, sizeof q,
+        "CREATE TABLE IF NOT EXISTS `%s` (\
+            `id` TINYINT UNSIGNED NOT NULL PRIMARY KEY,\
+            `Rocks` INT NOT NULL DEFAULT 0,\
+            `Gold` INT NOT NULL DEFAULT 0,\
+            `Iron` INT NOT NULL DEFAULT 0,\
+            `CrudeOil` INT NOT NULL DEFAULT 0,\
+            `Petrol` INT NOT NULL DEFAULT 0,\
+            `Diesel` INT NOT NULL DEFAULT 0,\
+            `AviationFuel` INT NOT NULL DEFAULT 0,\
+            `Chemicals` INT NOT NULL DEFAULT 0,\
+            `Malt` INT NOT NULL DEFAULT 0,\
+            `Drinks` INT NOT NULL DEFAULT 0,\
+            `Fruit` INT NOT NULL DEFAULT 0,\
+            `Wood` INT NOT NULL DEFAULT 0\
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        ECONOMY_TABLE);
+    mysql_tquery(g_SQL, q, "OnEconomyTable", "");
+    return 1;
+}
+
+function OnEconomyTable()
+{
+    new q[128];
+    format(q, sizeof q, "SELECT * FROM `%s` WHERE id=1", ECONOMY_TABLE);
+    mysql_tquery(g_SQL, q, "OnEconomyLoaded", "");
+}
+
+function OnEconomyLoaded()
+{
+    if (cache_num_rows() > 0)
+    {
+        cache_get_value_int(0, "Rocks", gRocks);
+        cache_get_value_int(0, "Gold", gGold);
+        cache_get_value_int(0, "Iron", gIron);
+        cache_get_value_int(0, "CrudeOil", gCrudeOil);
+        cache_get_value_int(0, "Petrol", gPetrol);
+        cache_get_value_int(0, "Diesel", gDiesel);
+        cache_get_value_int(0, "AviationFuel", gAviationFuel);
+        cache_get_value_int(0, "Chemicals", gChemicals);
+        cache_get_value_int(0, "Malt", gMalt);
+        cache_get_value_int(0, "Drinks", gDrinks);
+        cache_get_value_int(0, "Fruit", gFruit);
+        cache_get_value_int(0, "Wood", gWood);
+        printf("[SYSTEM] Economy loaded...");
+    }
+    else
+    {
+        new q[512];
+        mysql_format(g_SQL, q, sizeof q,
+            "INSERT INTO `%s` (id, Rocks,Gold,Iron,CrudeOil,Petrol,Diesel,AviationFuel,Chemicals,Malt,Drinks,Fruit,Wood) VALUES (1, %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d) \
+             ON DUPLICATE KEY UPDATE Rocks=VALUES(Rocks), Gold=VALUES(Gold), Iron=VALUES(Iron), CrudeOil=VALUES(CrudeOil), \
+             Petrol=VALUES(Petrol), Diesel=VALUES(Diesel), AviationFuel=VALUES(AviationFuel), Chemicals=VALUES(Chemicals), \
+             Malt=VALUES(Malt), Drinks=VALUES(Drinks), Fruit=VALUES(Fruit), Wood=VALUES(Wood)",
+            ECONOMY_TABLE,
+            gRocks,gGold,gIron,gCrudeOil,gPetrol,gDiesel,gAviationFuel,gChemicals,gMalt,gDrinks,gFruit,gWood);
+        mysql_tquery(g_SQL, q, "OnEconomyInserted", "");
+    }
+
+    gEconomyReady = true;
+}
+
+function OnEconomyInserted()
+{
+    printf("[SYSTEM] Default economy row inserted...");
+}
+
+stock LoadEconomy()
+{
+    EconomyTable();
+    return 1;
+}
+
+stock SaveEconomy()
+{
+    new q[512];
+    mysql_format(g_SQL, q, sizeof q,
+        "UPDATE `%s` SET Rocks=%d,Gold=%d,Iron=%d,CrudeOil=%d,Petrol=%d,Diesel=%d,AviationFuel=%d,Chemicals=%d,Malt=%d,Drinks=%d,Fruit=%d,Wood=%d WHERE id=1",
+        ECONOMY_TABLE,
+        gRocks,gGold,gIron,gCrudeOil,gPetrol,gDiesel,gAviationFuel,gChemicals,gMalt,gDrinks,gFruit,gWood);
+    mysql_tquery(g_SQL, q);
+    return 1;
+}
 
 hook OnGameModeInit()
 {
     gPetrolCooldown = 0;
     gDieselCooldown = 0;
 
-    if(!fexist(Econ_File))
-    {
-        printf("[WARNING] %s does not exist, continuing without.", Econ_File);
-    }
-	else
-	{
-        INI_ParseFile(Econ_File, "OnLoadEconomy", .bPassTag = true);
-	}
+    EconomyTable();
 
     for(new i; i < sizeof(MinerPos); i++)
     {
         CreateDynamic3DTextLabel("Mining Spot\n{FFFFFF}((/minerock))", COLOR_YELLOW, MinerPos[i][0], MinerPos[i][1], MinerPos[i][2], 20.0, .worldid = 0, .interiorid = 0);
     }
-    gEconomyReady = true;
     return 1;
 }
 
 hook OnGameModeExit()
 {
-    
     return 1;
 }
-
-function OnLoadEconomy(tag[], name[], value[])
-{
-    if (strcmp(tag, "Economy") == 0)
-    {
-        INI_Int("Rocks", gRocks);
-        INI_Int("Gold", gGold);
-        INI_Int("Iron", gIron);
-        INI_Int("CrudeOil", gCrudeOil);
-        INI_Int("Petrol", gPetrol);
-        INI_Int("Diesel", gDiesel);
-        INI_Int("AviationFuel", gAviationFuel);
-        INI_Int("Chemicals", gChemicals);
-        INI_Int("Malt", gMalt);
-        INI_Int("Drinks", gDrinks);
-        INI_Int("Fruit", gFruit);
-        INI_Int("Wood", gWood);
-    }
-    return 1;
-}
-
 
 task OnEconomyUpdate[1000]()
 {
     if(gEconomyReady == true)
     {
+        static econSaveTick;
         if(gPetrolCooldown >= 1)
         {
             gPetrolCooldown--;
@@ -104,11 +160,19 @@ task OnEconomyUpdate[1000]()
         {
             gPetrol += 10;
             gPetrolCooldown = 60;
+            econSaveTick = 0; // force a save soon after production
         }
         if(gDiesel >= 10 && gDieselCooldown < 1)
         {
             gDiesel += 10;
             gDieselCooldown = 60;
+            econSaveTick = 0;
+        }
+        econSaveTick++;
+        if(econSaveTick >= 60)
+        {
+            SaveEconomy();
+            econSaveTick = 0;
         }
     }
     return 1;

@@ -9,11 +9,9 @@
 //
 
 #include <YSI_Coding\y_hooks>
-#include <YSI\y_ini>
 
 #define     MAX_TRUCKS      6
-
-#define     Trucker_File    "trucker.ini"
+#define     TRUCKER_TABLE   "trucker_positions"
 
 enum tInfo
 {
@@ -35,63 +33,106 @@ new Float:GasOilX,
     Float:MetalY,
     Float:MetalZ;
 
-stock LoadTruckerPositions()
-{
-	if(!fexist(Trucker_File)) return printf("[WARNING] %s does not exist, proceeding without.", Trucker_File);
-	else
-	{
-        INI_ParseFile(Trucker_File, "OnServerLoadTrucker", .bPassTag = true);
-	}
-    return 1;
-}
-
-function OnServerLoadTrucker(tag[], name[], value[])
-{
-    if (strcmp(tag, "TruckerPositions") == 0)
-    {
-        INI_Float("GasOilX", GasOilX);
-        INI_Float("GasOilY", GasOilY);
-        INI_Float("GasOilZ", GasOilZ);
-        INI_Float("WoodX", WoodX);
-        INI_Float("WoodY", WoodY);
-        INI_Float("WoodZ", WoodZ);
-        INI_Float("MetalX", MetalX);
-        INI_Float("MetalY", MetalY);
-        INI_Float("MetalZ", MetalZ);
-    }
-    return 1;
-}
-
-stock SaveTruckerData()
-{
-    new INI:File = INI_Open(Trucker_File);
-    if(File != INI_NO_FILE)
-    {
-        INI_SetTag(File,"TruckerPositions");
-        INI_WriteFloat(File,"GasOilX", GasOilX);
-        INI_WriteFloat(File,"GasOilY", GasOilY);
-        INI_WriteFloat(File,"GasOilZ", GasOilZ);
-        INI_WriteFloat(File,"WoodX", WoodX);
-        INI_WriteFloat(File,"WoodY", WoodY);
-        INI_WriteFloat(File,"WoodZ", WoodZ);
-        INI_WriteFloat(File,"MetalX", MetalX);
-        INI_WriteFloat(File,"MetalY", MetalY);
-        INI_WriteFloat(File,"MetalZ", MetalZ);
-        INI_Close(File);
-    }
-    return 1;
-}
-
 //-1043.8407,-655.8583,32.0078 - Gas & Oil Load CP
 //2585.8242,2764.2935,10.8203  - Gas & Oil Unload CP
 //64.8579,-279.7427,1.5781     - Wood & Metal Load CP
 //-2271.5779,2306.7737,4.8202  - Wood & Metal Unload CP
 //661.6331,1219.3839,11.5489   - Final Stop (Trucking HQ)
 
-new g_Vehicle[12];
+stock TruckerTable()
+{
+    new q[512];
+    format(q, sizeof q,
+        "CREATE TABLE IF NOT EXISTS `%s` (\
+            `id` TINYINT UNSIGNED NOT NULL PRIMARY KEY,\
+            `GasOilX` FLOAT NOT NULL DEFAULT 0,\
+            `GasOilY` FLOAT NOT NULL DEFAULT 0,\
+            `GasOilZ` FLOAT NOT NULL DEFAULT 0,\
+            `WoodX`   FLOAT NOT NULL DEFAULT 0,\
+            `WoodY`   FLOAT NOT NULL DEFAULT 0,\
+            `WoodZ`   FLOAT NOT NULL DEFAULT 0,\
+            `MetalX`  FLOAT NOT NULL DEFAULT 0,\
+            `MetalY`  FLOAT NOT NULL DEFAULT 0,\
+            `MetalZ`  FLOAT NOT NULL DEFAULT 0\
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+        TRUCKER_TABLE);
+    mysql_tquery(g_SQL, q, "OnTruckerPositions", "");
+    return 1;
+}
 
+function OnTruckerPositions()
+{
+    new q[128];
+    format(q, sizeof q, "SELECT * FROM `%s` WHERE id=1", TRUCKER_TABLE);
+    mysql_tquery(g_SQL, q, "OnTruckerPositionsLoaded", "");
+}
+
+function OnTruckerPositionsLoaded()
+{
+    if (cache_num_rows() > 0)
+    {
+        cache_get_value_float(0, "GasOilX", GasOilX);
+        cache_get_value_float(0, "GasOilY", GasOilY);
+        cache_get_value_float(0, "GasOilZ", GasOilZ);
+        cache_get_value_float(0, "WoodX", WoodX);
+        cache_get_value_float(0, "WoodY", WoodY);
+        cache_get_value_float(0, "WoodZ", WoodZ);
+        cache_get_value_float(0, "MetalX", MetalX);
+        cache_get_value_float(0, "MetalY", MetalY);
+        cache_get_value_float(0, "MetalZ", MetalZ);
+        printf("[SYSTEM] Truck positions loaded...");
+    }
+    else
+    {
+        new q[256];
+        mysql_format(g_SQL, q, sizeof q,
+            "INSERT INTO `%s` (id, GasOilX,GasOilY,GasOilZ, WoodX,WoodY,WoodZ, MetalX,MetalY,MetalZ) VALUES (1, %f,%f,%f, %f,%f,%f, %f,%f,%f) \
+             ON DUPLICATE KEY UPDATE GasOilX=VALUES(GasOilX), GasOilY=VALUES(GasOilY), GasOilZ=VALUES(GasOilZ), \
+             WoodX=VALUES(WoodX), WoodY=VALUES(WoodY), WoodZ=VALUES(WoodZ), \
+             MetalX=VALUES(MetalX), MetalY=VALUES(MetalY), MetalZ=VALUES(MetalZ)",
+            TRUCKER_TABLE,
+            GasOilX,GasOilY,GasOilZ,
+            WoodX,WoodY,WoodZ,
+            MetalX,MetalY,MetalZ);
+        mysql_tquery(g_SQL, q, "OnTruckerPositionsInserted", "");
+    }
+}
+
+function OnTruckerPositionsInserted()
+{
+    printf("[SYSTEM] Default truck positions row inserted into MySQL.");
+}
+
+stock SaveTruckerData()
+{
+    new q[256];
+    mysql_format(g_SQL, q, sizeof q,
+        "UPDATE `%s` SET GasOilX=%f,GasOilY=%f,GasOilZ=%f, WoodX=%f,WoodY=%f,WoodZ=%f, MetalX=%f,MetalY=%f,MetalZ=%f WHERE id=1",
+        TRUCKER_TABLE,
+        GasOilX,GasOilY,GasOilZ,
+        WoodX,WoodY,WoodZ,
+        MetalX,MetalY,MetalZ);
+    mysql_tquery(g_SQL, q);
+    return 1;
+}
+
+stock EnsureTruckerTable()
+{
+    TruckerTable();
+    OnTruckerPositions();
+}
+
+stock LoadTruckerPositions()
+{
+    EnsureTruckerTable();
+    return 1;
+}
+
+new g_Vehicle[12];
 hook OnGameModeInit()
 {
+    EnsureTruckerTable();
+    
     for(new i = 0; i < MAX_TRUCKS; i++)
     {
         TruckInfo[i][Driver] = -1;

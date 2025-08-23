@@ -54,9 +54,6 @@
 #define 	FIXES_ServerVarMsg 	0
 #include 	<fixes>
 
-// Anticheat Includes - These go first, according to the instructions.
-#include 	<Rogue-AC.inc>
-
 // Plugin Headers
 #include 	<a_mysql>
 #include 	<crashdetect>
@@ -73,6 +70,7 @@
 // Non Plugin Headers
 #include 	<YSI_Coding\y_timers>
 #include 	<YSI_Coding\y_hooks>
+#include 	<Rogue-AC.inc>
 #include 	<mSelection>
 #include 	<callbacks>
 #include 	<attachments>
@@ -220,13 +218,13 @@ main()
 
 public OnGameModeInit()
 {
-	new initTick = GetTickCount();
-	print("[SERVER]: Starting Gamemode...");
-	MapAndreas_Init(MAP_ANDREAS_MODE_MINIMAL);
+    new initTick = GetTickCount();
+    print("[SERVER]: Starting Gamemode...");
+    MapAndreas_Init(MAP_ANDREAS_MODE_MINIMAL);
 
 	// MySQL init
 	SQL_Init();
-
+	
 	SetGameModeText(SERVER_GM_TEXT);
 	//ShowPlayerMarkers(PLAYER_MARKERS_MODE_OFF);
     ShowNameTags(false);
@@ -287,6 +285,8 @@ public OnGameModeInit()
 	LoadRentalVehicles();
 	print("[SYSTEM]: Loading trucker pos...");
 	LoadTruckerPositions();
+	print("[SYSTEM]: Loading economy...");
+	LoadEconomy();
 	print("[SYSTEM]: Loading sweeper veh...");
 	LoadSweeperVehicles();
 	print("[SYSTEM]: Loading pbolo...");
@@ -444,4 +444,98 @@ public OnGameModeExit()
 	return 1;
 }
 
-//-----------------------------------------------------
+public OnPlayerStreamIn(playerid, forplayerid)
+{
+	return 1;
+}
+
+//----------------------------------------------------
+
+public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
+{
+    printf("[DEBUG] OnPlayerCommandReceived: Player %d used /%s %s", playerid, cmd, params);
+
+    if(!Player[playerid][IsLoggedIn] && strcmp(cmd, "starttest", true))
+    {
+        SendClientMessage(playerid, -1, "You are not logged in.");
+        return 0;
+    }
+
+    if(strfind(params, "|") != -1 || strfind(params, "\r") != -1 || strfind(params, "\n") != -1)
+    {
+        SendClientMessage(playerid, -1, "You cannot use special characters in commands.");
+        return 0;
+    }
+
+    if(stringContainsIP(params) && Player[playerid][AdminLevel] < 1)
+    {
+        new string[256];
+        format(string, sizeof string, "%s (%d) may be server advertising: /%s %s", GetUserName(playerid), playerid, cmd, params);
+        SendClientMessage(playerid, -1, string);
+
+        format(string, sizeof string, "%s (IP: %s AccountID: %d) may be server advertising: /%s %s", GetUserName(playerid), GetUserIP(playerid), Player[playerid][ID], cmd, params);
+        SendClientMessage(playerid, -1, string);
+
+        DBLog("ServerAd", string);
+    }
+
+    if(strlen(params) > 0)
+    {
+        printf("[cmd] [%s]: /%s %s", GetUserName(playerid), cmd, params);
+    }
+    else
+    {
+        printf("[cmd] [%s]: /%s", GetUserName(playerid), cmd);
+    }
+
+    return 1;
+}
+
+// ----------------------------------------------------
+
+public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags) 
+{
+    printf("[DEBUG] OnPlayerCommandPerformed: Player %d /%s %s (result: %d)", playerid, cmd, params, result);
+
+    if(TempVar[playerid][IdleTime] > 0)
+    {
+        TempVar[playerid][IdleTime] = 0;
+    }
+
+    if(result == -1)
+    {
+        if(strlen(cmd) > 28)
+        {
+            SendClientMessage(playerid, -1, "Sorry, that command doesn't exist. Use /help or /helpme if you need assistance."); 
+        }
+        else 
+        {
+            new msg[128];
+            format(msg, sizeof msg, "Sorry, the command \"/%s\" doesn't exist. Use /help or /helpme if you need assistance.", cmd);
+            SendClientMessage(playerid, -1, msg);
+        }
+    }
+    else
+    {
+        new string[256], query[512];
+
+        if(strlen(params) > 0)
+        {
+            format(string, sizeof string, "[%s(%s) IP: %s AccountID: %d]: /%s %s",
+                GetUserName(playerid), GetMasterName(playerid), GetUserIP(playerid), PlayerInfo[playerid][pCharacterID], cmd, params);
+        }
+        else
+        {
+            format(string, sizeof string, "[%s(%s) IP: %s AccountID: %d]: /%s",
+                GetUserName(playerid), GetMasterName(playerid), GetUserIP(playerid), PlayerInfo[playerid][pCharacterID], cmd);
+        }
+
+        WriteLog("Logs/cmd.log", string);
+        DBLog("Command", string);
+
+        mysql_format(g_SQL, query, sizeof query, "INSERT INTO `cmd_log` (`AccountID`, `UserName`, `Command`, `Params`, `Timestamp`) VALUES (%d, '%e', '%e', '%e', '%d')", Player[playerid][ID], GetUserName(playerid), cmd, params, gettime());
+        mysql_tquery(g_SQL, query);
+    }
+
+    return 1; 
+}
