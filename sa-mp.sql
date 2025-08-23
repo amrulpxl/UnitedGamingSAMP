@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 23, 2025 at 02:20 AM
+-- Generation Time: Aug 23, 2025 at 01:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -327,7 +327,7 @@ CREATE TABLE `characters` (
 --
 
 INSERT INTO `characters` (`CharacterID`, `OwnerID`, `Name`, `Level`, `Expierience`, `Hours`, `Crashed`, `LastPosX`, `LastPosY`, `LastPosZ`, `LastPosA`, `LastInterior`, `LastVW`, `Money`, `Bank`, `PayCheque`, `PhoneNo`, `PhoneType`, `Faction`, `FactionRank`, `WeaponSpawned1`, `WeaponSpawned2`, `WeaponSpawned3`, `WeaponSpawned4`, `Weapon1`, `Weapon2`, `Weapon3`, `Weapon4`, `Ammo1`, `Ammo2`, `Ammo3`, `Ammo4`, `Handcuffed`, `Radio`, `RadioChan`, `RadioChan2`, `RadioChan3`, `RadioSlot`, `Injured`, `WeaponLicense`, `DrivingLicense`, `FlyingLicense`, `PrisonTimes`, `JailTimes`, `Job`, `SideJob`, `WalkStyle`, `ChatStyle`, `Jailed`, `JailID`, `JailTime`, `Spawn`, `Skin`, `Gender`, `Mask`, `MaskID`, `LastShot`, `LastShotTime`, `DeathMode`, `Health`, `Armour`, `OwnedVehicle1`, `OwnedVehicle2`, `OwnedVehicle3`, `OwnedVehicle4`, `OwnedVehicle5`, `SpawnedVehicle`, `DutySkin`, `BeforeSkin`, `FactionDuty`, `Renting`, `ConnectedTime`, `HouseSpawnID`, `PrimaryWep`, `PrimaryAmmo`, `SecondaryWep`, `SecondaryAmmo`, `MeleeWep`, `OtherWep`, `Fish`, `FishBait`, `WeaponX`, `WeaponY`, `WeaponZ`, `WeaponRX`, `WeaponRY`, `WeaponRZ`, `WeaponSX`, `WeaponSY`, `WeaponSZ`, `WeaponBone`, `Savings`, `WireCutter`, `Wires`, `BadgeNo`, `WeedSeeds`, `Weed`, `BMXPermission`, `Heroin`, `PoppySeeds`, `Opium`, `HoldingInv`, `HoldingInvAmount`, `Origin`, `Lotto`, `PrimarySerial`, `SecondarySerial`, `Accent`, `Apperance`, `LastRam`, `LastRamTime`) VALUES
-(128, 155, 'Giovanni_Chang', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0);
+(1, 1, 'Ian_Stance', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 107, 0, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -1331,7 +1331,6 @@ CREATE TABLE `players` (
   `id` int(11) NOT NULL,
   `username` varchar(128) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `salt` varchar(256) NOT NULL,
   `SecretWord` varchar(256) NOT NULL,
   `deaths` int(11) NOT NULL,
   `kills` int(11) NOT NULL,
@@ -1380,8 +1379,8 @@ CREATE TABLE `players` (
 -- Dumping data for table `players`
 --
 
-INSERT INTO `players` (`id`, `username`, `password`, `salt`, `SecretWord`, `deaths`, `kills`, `x`, `y`, `z`, `angle`, `interior`, `virtualworld`, `AdminLevel`, `HelperLevel`, `ChangePassword`, `OfflineJailed`, `OfflineJailTime`, `OfflineJailReason`, `OfflineJailAdmin`, `DonateLevel`, `DonateExpire`, `Ajailed`, `AjailTime`, `AjailReason`, `AjailedBy`, `PassedTest`, `BetaTester`, `HelpmeMutes`, `HelpmeMuted`, `Mapper`, `LastActive`, `StoredIP`, `StoredGPCI`, `RegisterDate`, `NameChanges`, `NumberChanges`, `BMXPermission`, `Lotto`, `PassedTutorial`, `PlayingHours`, `email`, `activated`, `dcrp_terms`, `samp_terms`, `IsLoggedIn`) VALUES
-(155, 'Natoritz', 'F689679BBFB783C450925027009BF35A8533D0B5020005F1D5292BA84C25933A', 'y2^M|lz~e=RVhoEz', '2BA433ECDA785D6C282846D8D7690DD1B1763922CF789FA9D8E3E7D6A3031B22', 0, 0, -145.792, 1100.45, 19.5938, 318.847, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, '', '', 1, 0, 0, 0, 0, 1755905835, '36.75.29.168', 'ED40ED0E8089CC44C08EE9580F4C8C44EE8EE990', 0, 0, 0, 0, 0, 1, 0, '', 0, 0, 0, 0);
+INSERT INTO `players` (`id`, `username`, `password`, `SecretWord`, `deaths`, `kills`, `x`, `y`, `z`, `angle`, `interior`, `virtualworld`, `AdminLevel`, `HelperLevel`, `ChangePassword`, `OfflineJailed`, `OfflineJailTime`, `OfflineJailReason`, `OfflineJailAdmin`, `DonateLevel`, `DonateExpire`, `Ajailed`, `AjailTime`, `AjailReason`, `AjailedBy`, `PassedTest`, `BetaTester`, `HelpmeMutes`, `HelpmeMuted`, `Mapper`, `LastActive`, `StoredIP`, `StoredGPCI`, `RegisterDate`, `NameChanges`, `NumberChanges`, `BMXPermission`, `Lotto`, `PassedTutorial`, `PlayingHours`, `email`, `activated`, `dcrp_terms`, `samp_terms`, `IsLoggedIn`) VALUES
+(1, 'natoritz', '$2b$12$CIHAJFBJ/LrzRexW7A6qkuMP6Os0xXPCcs7DF9sRXk1NQyphGkSUK', '$2b$12$7X0L6KWP8itIGM8vh6hCqesSWXXGQoyZ4KT3NqTgsQYHYMtgEi6SS', 0, 0, -158.941, 1104.41, 19.7422, 94.9128, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, 0, 0, '', '', 1, 0, 0, 0, 0, 1755948147, '36.75.29.168', 'ED40ED0E8089CC44C08EE9580F4C8C44EE8EE990', 0, 0, 0, 0, 0, 1, 0, '', 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2162,7 +2161,7 @@ ALTER TABLE `business`
 -- AUTO_INCREMENT for table `characters`
 --
 ALTER TABLE `characters`
-  MODIFY `CharacterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `CharacterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `cmd_log`
@@ -2366,7 +2365,7 @@ ALTER TABLE `phone_contacts`
 -- AUTO_INCREMENT for table `players`
 --
 ALTER TABLE `players`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `player_inventory`
