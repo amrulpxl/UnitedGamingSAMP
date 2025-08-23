@@ -31,10 +31,8 @@ public OnPlayerDataLoaded(playerid, race_check)
 
 	if(cache_num_rows() > 0)
 	{
-		// we store the password and the salt so we can compare the password the player inputs
-		// and save the rest so we won't have to execute another query later
+		// store password and other fields for bcrypt verification and later use
 		cache_get_value(0, "password", Player[playerid][Password], 65);
-		cache_get_value(0, "salt", Player[playerid][Salt], 17);
 		cache_get_value(0, "SecretWord", Player[playerid][SecretWord], 65);
 		cache_get_value(0, "StoredIP", Player[playerid][StoredIP], 128);
 		cache_get_value(0, "StoredGPCI", Player[playerid][StoredGPCI], 128);
@@ -81,14 +79,20 @@ Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
 
 	if (strlen(inputtext) <= 5) return Dialog_Show(playerid, DIALOG_REGISTER, DIALOG_STYLE_PASSWORD, "Registration", "Your password must be longer than 5 characters!\nPlease enter your password in the field below:", "Register", "Abort");
 
-	// 16 random characters from 33 to 126 (in ASCII) for the salt
-	for (new i = 0; i < 16; i++) Player[playerid][Salt][i] = random(94) + 33;
-	SHA256_PassHash(inputtext, Player[playerid][Salt], Player[playerid][Password], 65);
+    bcrypt_hash(playerid, "OnRegisterPasswordHashed", inputtext, BCRYPT_COST);
+    return 1;
+}
 
-	new query[221];
-	mysql_format(g_SQL, query, sizeof query, "INSERT INTO `players` (`username`, `password`, `salt`) VALUES ('%e', '%e', '%e')", Player[playerid][Name], Player[playerid][Password], Player[playerid][Salt]);
-	mysql_tquery(g_SQL, query, "OnPlayerRegister", "d", playerid);
-	return 1;
+public OnRegisterPasswordHashed(playerid, hashid)
+{
+    new dest[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(dest);
+    format(Player[playerid][Password], 65, "%s", dest);
+
+    new query[221];
+    mysql_format(g_SQL, query, sizeof query, "INSERT INTO `players` (`username`, `password`) VALUES ('%e', '%e')", Player[playerid][Name], Player[playerid][Password]);
+    mysql_tquery(g_SQL, query, "OnPlayerRegister", "d", playerid);
+    return 1;
 }
 
 function OnPlayerRegister(playerid)
@@ -112,44 +116,41 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
 	if(isnull(inputtext))
 		return ShowLoginDialog(playerid);
 
-	new hashed_pass[65], query[128];
-	SHA256_PassHash(inputtext, Player[playerid][Salt], hashed_pass, 65);
+    // bcrypt-only verification
+    bcrypt_verify(playerid, "OnLoginPasswordVerified", inputtext, Player[playerid][Password]);
+    return 1;
+}
 
-	if (strcmp(hashed_pass, Player[playerid][Password]) == 0)
-	{
-		cache_set_active(Player[playerid][Cache_ID]);
+public OnLoginPasswordVerified(playerid, bool:success)
+{
+    if (success)
+    {
+        new query[128];
+        cache_set_active(Player[playerid][Cache_ID]);
+        AssignPlayerData(playerid);
+        cache_delete(Player[playerid][Cache_ID]);
+        Player[playerid][Cache_ID] = MYSQL_INVALID_CACHE;
 
-		AssignPlayerData(playerid);
+        KillTimer(Player[playerid][LoginTimer]);
+        Player[playerid][LoginTimer] = 0;
+        TempVar[playerid][IsLoggedIn] = true;
+        mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `IsLoggedIn` = 1 WHERE `id` = %d LIMIT 1", Player[playerid][ID]);
+        mysql_tquery(g_SQL, query);
 
-		// remove the active cache from memory and unsets the active cache as well
-		cache_delete(Player[playerid][Cache_ID]);
-		Player[playerid][Cache_ID] = MYSQL_INVALID_CACHE;
-
-
-		KillTimer(Player[playerid][LoginTimer]);
-		Player[playerid][LoginTimer] = 0;
-		TempVar[playerid][IsLoggedIn] = true;
-		mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `IsLoggedIn` = 1 WHERE `id` = %d LIMIT 1", Player[playerid][ID]);
-		mysql_tquery(g_SQL, query);
-
-		mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `bans` WHERE `AccountID` = '%d' LIMIT 1", Player[playerid][ID]);
-		mysql_tquery(g_SQL, query, "OnCheckLoginBan", "d", playerid);
-
-		// Check for account ID ban
-		// sets the specified cache as the active cache so we can retrieve the rest player data
-	}
-	else
-	{
-		Player[playerid][LoginAttempts]++;
-
-		if (Player[playerid][LoginAttempts] >= 3)
-		{
-			Dialog_Show(playerid, DIALOG_UNUSED, DIALOG_STYLE_MSGBOX, "Login", "You have mistyped your password too often (3 times).", "Okay", "");
-			DelayedKick(playerid);
-		}
-		else ShowLoginDialog(playerid);
-	}
-	return 1;
+        mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `bans` WHERE `AccountID` = '%d' LIMIT 1", Player[playerid][ID]);
+        mysql_tquery(g_SQL, query, "OnCheckLoginBan", "d", playerid);
+    }
+    else
+    {
+        Player[playerid][LoginAttempts]++;
+        if (Player[playerid][LoginAttempts] >= 3)
+        {
+            Dialog_Show(playerid, DIALOG_UNUSED, DIALOG_STYLE_MSGBOX, "Login", "You have mistyped your password too often (3 times).", "Okay", "");
+            DelayedKick(playerid);
+        }
+        else ShowLoginDialog(playerid);
+    }
+    return 1;
 }
 
 forward OnLoginTimeout(playerid);
@@ -175,12 +176,20 @@ Dialog:DIALOG_SECRETWORD_LOGIN(playerid, response, listitem, inputtext[])
 		{F81414}This should {FFFF00}NOT{F81414} be the same as your password.", "Enter", "Cancel");
 		return 1;
 	}
-	SHA256_PassHash(inputtext, Player[playerid][Salt], Player[playerid][SecretWord], 65);
+    bcrypt_hash(playerid, "OnSecretWordLoginHashed", inputtext, BCRYPT_COST);
+    return 1;
+}
 
-	new query[221];
-	mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `SecretWord` = '%e' WHERE `id` = %d LIMIT 1", Player[playerid][SecretWord], Player[playerid][ID]);
-	mysql_tquery(g_SQL, query, "OnSecretWordLogin", "d", playerid);
-	return 1;
+public OnSecretWordLoginHashed(playerid, hashid)
+{
+    new dest[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(dest);
+    format(Player[playerid][SecretWord], 65, "%s", dest);
+
+    new query[221];
+    mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `SecretWord` = '%e' WHERE `id` = %d LIMIT 1", Player[playerid][SecretWord], Player[playerid][ID]);
+    mysql_tquery(g_SQL, query, "OnSecretWordLogin", "d", playerid);
+    return 1;
 }
 
 function OnSecretWordLogin(playerid)
@@ -207,12 +216,20 @@ Dialog:DIALOG_SECRETWORD_CREATE(playerid, response, listitem, inputtext[])
 		SecretWordDialog(playerid);
 		return 1;
 	}
-	SHA256_PassHash(inputtext, Player[playerid][Salt], Player[playerid][SecretWord], 65);
+    bcrypt_hash(playerid, "OnSecretWordCreateHashed", inputtext, BCRYPT_COST);
+    return 1;
+}
 
-	new query[221];
-	mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `SecretWord` = '%e' WHERE `id` = %d LIMIT 1", Player[playerid][SecretWord], Player[playerid][ID]);
-	mysql_tquery(g_SQL, query, "OnSecretWord", "d", playerid);
-	return 1;
+public OnSecretWordCreateHashed(playerid, hashid)
+{
+    new dest[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(dest);
+    format(Player[playerid][SecretWord], 65, "%s", dest);
+
+    new query[221];
+    mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `SecretWord` = '%e' WHERE `id` = %d LIMIT 1", Player[playerid][SecretWord], Player[playerid][ID]);
+    mysql_tquery(g_SQL, query, "OnSecretWord", "d", playerid);
+    return 1;
 }
 
 function OnSecretWord(playerid)
@@ -240,8 +257,12 @@ public _KickPlayerDelayed(playerid)
 	return 1;
 }
 
-
-//-----------------------------------------------------
+// ------------------------------------------------
+forward OnRegisterPasswordHashed(playerid, hashid);
+forward OnLoginPasswordVerified(playerid, bool:success);
+forward OnSecretWordLoginHashed(playerid, hashid);
+forward OnSecretWordCreateHashed(playerid, hashid);
+forward OnChangeUserPassHashed(playerid, hashid);
 
 AssignPlayerData(playerid)
 {
@@ -402,16 +423,25 @@ Dialog:ChangeUserPassStep2(playerid, response, listitem, inputtext[])
 	if(isnull(inputtext))
 		return Dialog_Show(playerid, ChangeUserPassStep2, DIALOG_STYLE_PASSWORD, "Change Password", "Enter your new password.", "Enter", "Exit");
 	
-	SHA256_PassHash(inputtext, Player[playerid][Salt], Player[playerid][Password], 65);
+    bcrypt_hash(playerid, "OnChangeUserPassHashed", inputtext, BCRYPT_COST);
+    return 1;
+}
 
-	new query[221];
-	mysql_format(g_SQL, query, sizeof query, "UPDATE `players SET `password` = '%e' WHERE `id` = %d", Player[playerid][Password], Player[playerid][ID]);
-	mysql_tquery(g_SQL, query, "OnUpdatePassword", "d", playerid);
-	return 1;
+public OnChangeUserPassHashed(playerid, hashid)
+{
+    new dest[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(dest);
+    format(Player[playerid][Password], 65, "%s", dest);
+
+    new query[221];
+    mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `password` = '%e' WHERE `id` = %d", Player[playerid][Password], Player[playerid][ID]);
+    mysql_tquery(g_SQL, query, "OnUpdatePassword", "d", playerid);
+    return 1;
 }
 
 function OnUpdatePassword(playerid)
 {
 	UpdatePlayerData(playerid);
 	SendServerMessage(playerid, "You have updated your password.");
+	return 1;
 }
