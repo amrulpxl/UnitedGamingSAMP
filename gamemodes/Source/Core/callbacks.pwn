@@ -9,6 +9,7 @@
 //
 
 new TasedRecently[MAX_PLAYERS];
+new ChangePassCB[MAX_PLAYERS][64];
 
 ptask TaserTimer[1000](playerid)
 {
@@ -1498,13 +1499,22 @@ function OnCheckLoginBan(playerid)
 
 stock OnChangePassword(playerid, inputtext[], callback[])
 {
-	for (new i = 0; i < 16; i++) Player[playerid][Salt][i] = random(94) + 33;
-	SHA256_PassHash(inputtext, Player[playerid][Salt], Player[playerid][Password], 65);
+    format(ChangePassCB[playerid], sizeof ChangePassCB[], "%s", callback);
+    bcrypt_hash(playerid, "OnBcryptChangePassword", inputtext, BCRYPT_COST);
+    return 1;
+}
 
-	new query[350];
-	mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `password` = '%e', `ChangePassword` = 0 WHERE `id` = %d LIMIT 1", Player[playerid][Password], Player[playerid][ID]);
-	mysql_tquery(g_SQL, query, callback, "d", playerid);
-	return 1;
+forward OnBcryptChangePassword(playerid, hashid);
+public OnBcryptChangePassword(playerid, hashid)
+{
+    new hashed[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(hashed);
+    format(Player[playerid][Password], 65, "%s", hashed);
+
+    new query[350];
+    mysql_format(g_SQL, query, sizeof query, "UPDATE `players` SET `password` = '%e', `ChangePassword` = 0 WHERE `id` = %d LIMIT 1", Player[playerid][Password], Player[playerid][ID]);
+    mysql_tquery(g_SQL, query, ChangePassCB[playerid], "d", playerid);
+    return 1;
 }
 
 Dialog:CHANGE_PASSWORD_LOGIN(playerid, response, listitem, inputtext[])
@@ -1527,26 +1537,32 @@ function OnLoginPassChange(playerid)
 
 Dialog:SECRET_WORD_INPUT(playerid, response, listitem, inputtext[])
 {
-	if(response)
-	{
-		new hashed_pass[65], string[128];
-		SHA256_PassHash(inputtext, Player[playerid][Salt], hashed_pass, 65);
+    if(response)
+    {
+        bcrypt_verify(playerid, "OnSecretWordVerified", inputtext, Player[playerid][SecretWord]);
+        return 1;
+    }
+    else DelayedKick(playerid);
+    return 1;
+}
 
-		if (strcmp(hashed_pass, Player[playerid][SecretWord]) == 0)
-		{
-			SendServerMessage(playerid, "Correct secret word.");
-			HandleUserLogin(playerid);
-		}
-		else
-		{
-			format(string, sizeof(string), "%s has entered an incorrect secret word, they've been autokicked.", GetMasterName(playerid));
-			SendAdminWarning(1, string);
-			SendServerMessage(playerid, "Wrong Secret Word, you have been kicked.");
-			DelayedKick(playerid);
-		}
-	}
-	else DelayedKick(playerid);
-	return 1;
+forward OnSecretWordVerified(playerid, bool:success);
+public OnSecretWordVerified(playerid, bool:success)
+{
+    if (success)
+    {
+        SendServerMessage(playerid, "Correct secret word.");
+        HandleUserLogin(playerid);
+    }
+    else
+    {
+        new string[128];
+        format(string, sizeof(string), "%s has entered an incorrect secret word, they've been autokicked.", GetMasterName(playerid));
+        SendAdminWarning(1, string);
+        SendServerMessage(playerid, "Wrong Secret Word, you have been kicked.");
+        DelayedKick(playerid);
+    }
+    return 1;
 }
 
 function HandleUserLogin(playerid)
