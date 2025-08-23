@@ -64,6 +64,7 @@
 #include 	<Pawn.CMD>
 #include 	<sscanf2>
 #include 	<discord-connector>
+#include 	<samp_bcrypt>
 
 #if defined PROFILE_BUILD
 	#include <plugin_profiler>
