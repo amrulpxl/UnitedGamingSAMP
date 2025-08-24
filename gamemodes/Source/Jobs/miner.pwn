@@ -80,7 +80,6 @@ function OnEconomyLoaded()
         cache_get_value_int(0, "Drinks", gDrinks);
         cache_get_value_int(0, "Fruit", gFruit);
         cache_get_value_int(0, "Wood", gWood);
-        printf("[SYSTEM] Economy loaded...");
     }
     else
     {
