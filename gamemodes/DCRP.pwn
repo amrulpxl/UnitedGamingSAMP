@@ -220,173 +220,265 @@ public OnGameModeInit()
 {
     new initTick = GetTickCount();
     print("[SERVER]: Starting Gamemode...");
+    print("==========================================================");
+    
+    print("[SYSTEM]: Initializing MapAndreas...");
     MapAndreas_Init(MAP_ANDREAS_MODE_MINIMAL);
-
-	// MySQL init
-	SQL_Init();
+    print("[SYSTEM]: MapAndreas initialized successfully.");
 	
-	SetGameModeText(SERVER_GM_TEXT);
-	//ShowPlayerMarkers(PLAYER_MARKERS_MODE_OFF);
+    print("[SYSTEM]: Connecting to MySQL database...");
+    SQL_Init();
+
+    print("[SYSTEM]: Setting gamemode configuration...");
+    SetGameModeText(SERVER_GM_TEXT);
     ShowNameTags(false);
     DisableInteriorEnterExits();
     EnableStuntBonusForAll(false);
-	//SetNameTagDrawDistance(15.0);
-	Streamer_TickRate(100);
+    print("[SYSTEM]: Gamemode configuration finished.");
 
-	ManualVehicleEngineAndLights();
+    print("[SYSTEM]: Configuring streamer and vehicle settings...");
+    Streamer_TickRate(100);
+    ManualVehicleEngineAndLights();
+    print("[SYSTEM]: Streamer and vehicle settings configured.");
 
-	gettime(ServerInfo[CurrentHour], ServerInfo[CurrentMinute], ServerInfo[CurrentSecond]);
+    print("[SYSTEM]: Setting server time and weather...");
+    gettime(ServerInfo[CurrentHour], ServerInfo[CurrentMinute], ServerInfo[CurrentSecond]);
+    RandomWeather();
+    print("[SYSTEM]: Server time and weather set.");
 
-	RandomWeather();
+    print("[SYSTEM]: Loading skin selection menus...");
+    maleList   = LoadModelSelectionMenu("males.skn");
+    femaleList = LoadModelSelectionMenu("females.skn");
+    BuyList    = LoadModelSelectionMenu("buy.skn");
+    print("[SYSTEM]: Skin selection menus loaded successfully.");
 
-	// if the table has been created, the "SetupPlayerTable" function does not have any purpose so you may remove it completely
-	SetupPlayerTable();
+    print("[SYSTEM]: Resetting vehicle parameters...");
+    for (new x = 0; x < MAX_VEHICLES; x++)
+    {
+        LightPwr[x] = 1;
+        Flasher[x] = 0;
+        FlasherState[x] = 0;
+        SetVehicleParamsCarWindows(x, 1, 1, 1, 1);
+        SetVehicleParamsEx(x, 0, 0, 0, 0, 0, 0, 0);
+        CoreVehicle[x][VehicleFuel] = 100.0;
+        CoreVehicle[x][TrashAmount] = 0;
+        CoreVehicle[x][RadioURL][0] = 0;
+    }
+    print("[SYSTEM]: Vehicle parameters reset successfully.");
 
-	print("[SYSTEM]: Loading skins...");
-	maleList = LoadModelSelectionMenu("males.skn");
-	femaleList = LoadModelSelectionMenu("females.skn");
-	BuyList = LoadModelSelectionMenu("buy.skn");
+    print("[SYSTEM]: Loading pickups and 3D text labels...");
+    for(new i; i < sizeof(SprayShop); i++)
+    {
+        CreateDynamic3DTextLabel("Pay & Spray\n{FFFFFF}Type {33AA33}/enter{FFFFFF} to enter", 0x33AA33FF, SprayShop[i][0], SprayShop[i][1], SprayShop[i][2] + 0.50, 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0, -1, 50.0);
+        CreateDynamicPickup(1318, 1, SprayShop[i][0], SprayShop[i][1], SprayShop[i][2]);
+    }
+    CreateDynamic3DTextLabel("Fort Carson Town Hall\n{FFFFFF}/payfine, /signcheque", 0x33AA33FF, 1346.8292, 1571.4750, -13.5820 + 0.50, 20.0);
+    CreateDynamicPickup(1239, 1, 1346.8292, 1571.4750, -13.5820);
+    print("[SYSTEM]: Pickups and 3D text labels loaded successfully.");
 
-	print("[SYSTEM]: Loading Settings...");
-	LoadSettings();
-	print("[SYSTEM]: Loading factions...");
-	LoadFactions();
-	print("[SYSTEM]: Loading vehicles...");
-	LoadVehicles();
-	print("[SYSTEM]: Loading mapping...");
-	LoadMapping();
-	print("[SYSTEM]: Loading houses...");
-	LoadHouses();
-	print("[SYSTEM]: Loading businesses...");
-	LoadBusinesses();
-	print("[SYSTEM]: Loading entrances...");
-	LoadEntrance();
-	print("[SYSTEM]: Loading gates...");
-	LoadGates();
-	print("[SYSTEM]: Loading jails...");
-	LoadJails();
-	print("[SYSTEM]: Loading dealership...");
-	LoadDealership();
-	print("[SYSTEM]: Loading gas pumps...");
-	LoadGasPumps();
-	print("[SYSTEM]: Loading streets...");
-	LoadStreets();
-	print("[SYSTEM]: Loading graffiti...");
-	LoadGraffiti();
-	print("[SYSTEM]: Loading complex...");
-	LoadComplexes();
-	print("[SYSTEM]: Loading teleports...");
-	LoadTeleports();
-	print("[SYSTEM]: Loading weed...");
-	LoadWeeds();
-	print("[SYSTEM]: Loading atm...");
-	LoadATMs();
-	print("[SYSTEM]: Loading rental vehicles...");
-	LoadRentalVehicles();
-	print("[SYSTEM]: Loading trucker pos...");
-	LoadTruckerPositions();
-	print("[SYSTEM]: Loading economy...");
-	LoadEconomy();
-	print("[SYSTEM]: Loading sweeper veh...");
-	LoadSweeperVehicles();
-	print("[SYSTEM]: Loading pbolo...");
-	LoadPBolos();
-	print("[SYSTEM]: Loading vbolo...");
-    LoadVBolos();
-	print("[SYSTEM]: Loading garbage...");
-	LoadGarbages();
-	print("[SYSTEM]: Loading fac wep...");
-	LoadFactionWeapons();
-	print("[SYSTEM]: Loading black market...");
-	LoadBlackMarkets();
-	print("[SYSTEM]: Loading fac skins...");
-	LoadFactionSkins();
-	print("[SYSTEM]: Loading furniture...");
-	LoadFurniture();
-	print("[SYSTEM]: Loading radio station...");
-	LoadRadioStations();
+    print("[SYSTEM]: Loading payphones...");
+    InitPayphones();
+    print("[SYSTEM]: Payphones loaded successfully.");
 
-	print("[SYSTEM]: Reset Vehicle...");
-	for (new x = 0; x < MAX_VEHICLES; x++)
-	{
-		LightPwr[x] = 1;
-		Flasher[x] = 0;
-		FlasherState[x] = 0;
-		SetVehicleParamsCarWindows(x, 1, 1, 1, 1);
-		SetVehicleParamsEx(x, 0, 0, 0, 0, 0, 0, 0);//Reset all these params to 0.
-		CoreVehicle[x][VehicleFuel] = 100.0;
-		CoreVehicle[x][TrashAmount] = 0;
-		CoreVehicle[x][RadioURL][0] = 0;
-	}
+    print("[SYSTEM]: Loading static maps and interiors...");
+    LoadStaticMaps();
+    LoadBlankHouseInteriors();
+    print("[SYSTEM]: Static maps and interiors loaded successfully.");
 
-	print("[SYSTEM]: Loading Pickups and 3D Text Labels...");
-	for(new i; i < sizeof(SprayShop); i++)
-	{
-		CreateDynamic3DTextLabel("Pay & Spray\n{FFFFFF}Type {33AA33}/enter{FFFFFF} to enter", 0x33AA33FF, SprayShop[i][0], SprayShop[i][1], SprayShop[i][2]+0.50, 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0, -1, 50.0);
-		CreateDynamicPickup(1318, 1, SprayShop[i][0], SprayShop[i][1], SprayShop[i][2]);
-	}
+    print("[SYSTEM]: Setting up player classes and textdraws...");
+    AddPlayerClass(1, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, DEFAULT_POS_A, 0, 0, 0, 0, 0, 0);
 
-	CreateDynamic3DTextLabel("Fort Carson Town Hall\n{FFFFFF}/payfine, /signcheque", 0x33AA33FF, 1346.8292, 1571.4750, -13.5820+0.50, 20.0);
-	CreateDynamicPickup(1239, 1, 1346.8292, 1571.4750, -13.5820);
-
-	print("[SYSTEM]: Loading payphones...");
-	InitPayphones();
-
-	print("[SYSTEM]: Loading static maps...");
-	LoadStaticMaps();
-	LoadBlankHouseInteriors();
-
-	AddPlayerClass(1, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, DEFAULT_POS_A, 0, 0, 0, 0, 0, 0);
-
-	AnimText = TextDrawCreate(435.000000, 426.000000, "Press ~r~~k~~PED_SPRINT~~w~ to stop animation");
-	TextDrawBackgroundColor(AnimText, 255);
-	TextDrawFont(AnimText, 2);
-	TextDrawLetterSize(AnimText, 0.260000, 1.299999);
-	TextDrawColor(AnimText, -1);
-	TextDrawSetOutline(AnimText, 1);
+    AnimText = TextDrawCreate(435.0, 426.0, "Press ~r~~k~~PED_SPRINT~~w~ to stop animation");
+    TextDrawBackgroundColor(AnimText, 255);
+    TextDrawFont(AnimText, 2);
+    TextDrawLetterSize(AnimText, 0.26, 1.3);
+    TextDrawColor(AnimText, -1);
+    TextDrawSetOutline(AnimText, 1);
     TextDrawSetProportional(AnimText, true);
+    print("[SYSTEM]: Player classes and textdraws setup completed.");
 
-	SendRconCommand("conncookies 1");
-	SendRconCommand("cookielogging 1");
-	SendRconCommand("chatlogging 0");
+    print("[SYSTEM]: Configuring server commands...");
+    SendRconCommand("conncookies 1");
+    SendRconCommand("cookielogging 1");
+    SendRconCommand("chatlogging 0");
+    print("[SYSTEM]: Server commands configured.");
 
-	LoadFishingPier();
-	Init_Jobs();
+    print("[SYSTEM]: Loading fishing pier and jobs...");
+    LoadFishingPier();
+    Init_Jobs();
+    print("[SYSTEM]: Fishing pier and jobs loaded successfully.");
 
-	gAnticheat = true;
+    print("[SYSTEM]: Enabling anticheat system...");
+    gAnticheat = true;
+    print("[SYSTEM]: Anticheat system enabled.");
 
-	print("[SYSTEM]: Set streamer settings...");
-	Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1000);
-	Streamer_SetTickRate(20);
+    print("[SYSTEM]: Configuring streamer settings...");
+    Streamer_SetVisibleItems(STREAMER_TYPE_OBJECT, 1000);
+    Streamer_SetTickRate(20);
+    print("[SYSTEM]: Streamer settings configured.");
 
-	new str[128];
-	SendRconCommand("mapname Bone County");
+    print("[SYSTEM]: Configuring server properties...");
+    new str[128];
+    SendRconCommand("mapname Bone County");
+    format(str, sizeof str, "weburl %s", ServerInfo[ServerWebsite]);
+    SendRconCommand(str);
+    SendRconCommand("language English");
+    format(str, sizeof str, "hostname %s", ServerInfo[ServerName]);
+    SendRconCommand(str);
 
-	format(str, sizeof str, "weburl %s", ServerInfo[ServerWebsite]);
-	SendRconCommand(str);
-	SendRconCommand("language English");
+    gettime(.hour = ServerInfo[CurrentHour], .minute = ServerInfo[CurrentMinute], .second = ServerInfo[CurrentSecond]);
+    SetWorldTime(ServerInfo[CurrentHour]);
 
-	format(str, sizeof str, "hostname %s", ServerInfo[ServerName]);
-	SendRconCommand(str);
+    if(strlen(SERVER_PASSWORD) > 0)
+    {
+        format(str, sizeof str, "password %s", SERVER_PASSWORD);
+        SendRconCommand(str);
+    }
+    else SendRconCommand("password 0");
 
-	gettime(.hour = ServerInfo[CurrentHour], .minute = ServerInfo[CurrentMinute], .second = ServerInfo[CurrentSecond]);
-	SetWorldTime(ServerInfo[CurrentHour]);
+    if(strlen(ServerInfo[ServerRevision]) > 0)
+    {
+        format(str, sizeof str, "DC-RP %s", ServerInfo[ServerRevision]);
+        SetGameModeText(str);
+    }
+    else SetGameModeText("DC-RP");
+    print("[SYSTEM]: Server properties configured successfully.");
 
-	if(strlen(SERVER_PASSWORD) > 0)
-	{
-		format(str, sizeof str, "password %s", SERVER_PASSWORD);
-		SendRconCommand(str);
-	}
-	else SendRconCommand("password 0");
-
-	if(strlen(ServerInfo[ServerRevision]) > 0)
-	{
-		format(str, sizeof str, "DC-RP %s", ServerInfo[ServerRevision]);
-		SetGameModeText(str);
-	}
-	else SetGameModeText("DC-RP");
-	printf("Gamemode Round Started: %s (Tick: %d)", GetDateTime(), GetTickCount()-initTick);
+    print("==========================================================");
+    printf("Gamemode Round Started: %s (Tick: %d)", GetDateTime(), GetTickCount()-initTick);
+    print("==========================================================");
 	return 1;
+}
+
+forward OnSQLConnected();
+public OnSQLConnected()
+{
+    print("==========================================================");
+    print("[MYSQL]: Connection established, loading database data...");
+    print("==========================================================");
+
+    print("[SYSTEM]: Setting up player table...");
+    SetupPlayerTable();
+    print("[SYSTEM]: Player table setup completed.");
+
+    print("[SYSTEM]: Loading server settings...");
+    LoadSettings();
+    print("[SYSTEM]: Server settings loaded.");
+
+    print("[SYSTEM]: Loading factions...");
+    LoadFactions();
+    printf("[SYSTEM]: Factions loaded successfully.");
+
+    print("[SYSTEM]: Loading vehicles...");
+    LoadVehicles();
+    printf("[SYSTEM]: Vehicles loaded successfully.");
+
+    print("[SYSTEM]: Loading mapping objects...");
+    LoadMapping();
+    print("[SYSTEM]: Mapping objects loaded.");
+
+    print("[SYSTEM]: Loading houses...");
+    LoadHouses();
+    printf("[SYSTEM]: Houses loaded successfully.");
+
+    print("[SYSTEM]: Loading businesses...");
+    LoadBusinesses();
+    printf("[SYSTEM]: Businesses loaded successfully.");
+
+    print("[SYSTEM]: Loading entrances...");
+    LoadEntrance();
+    printf("[SYSTEM]: Entrances loaded successfully.");
+
+    print("[SYSTEM]: Loading gates...");
+    LoadGates();
+    printf("[SYSTEM]: Gates loaded successfully.");
+
+    print("[SYSTEM]: Loading jails...");
+    LoadJails();
+    printf("[SYSTEM]: Jails loaded successfully.");
+
+    print("[SYSTEM]: Loading dealership...");
+    LoadDealership();
+    printf("[SYSTEM]: Dealership loaded successfully.");
+
+    print("[SYSTEM]: Loading gas pumps...");
+    LoadGasPumps();
+    printf("[SYSTEM]: Gas pumps loaded successfully.");
+
+    print("[SYSTEM]: Loading streets...");
+    LoadStreets();
+    printf("[SYSTEM]: Streets loaded successfully.");
+
+    print("[SYSTEM]: Loading graffiti...");
+    LoadGraffiti();
+    printf("[SYSTEM]: Graffiti loaded successfully.");
+
+    print("[SYSTEM]: Loading complexes...");
+    LoadComplexes();
+    printf("[SYSTEM]: Complexes loaded successfully.");
+
+    print("[SYSTEM]: Loading teleports...");
+    LoadTeleports();
+    printf("[SYSTEM]: Teleports loaded successfully.");
+
+    print("[SYSTEM]: Loading weed plants...");
+    LoadWeeds();
+    printf("[SYSTEM]: Weed plants loaded successfully.");
+
+    print("[SYSTEM]: Loading ATMs...");
+    LoadATMs();
+    printf("[SYSTEM]: ATMs loaded successfully.");
+
+    print("[SYSTEM]: Loading rental vehicles...");
+    LoadRentalVehicles();
+    printf("[SYSTEM]: Rental vehicles loaded successfully.");
+
+    print("[SYSTEM]: Loading trucker positions...");
+    LoadTruckerPositions();
+    printf("[SYSTEM]: Trucker positions loaded successfully.");
+
+    print("[SYSTEM]: Loading economy data...");
+    LoadEconomy();
+    printf("[SYSTEM]: Economy data loaded successfully.");
+
+    print("[SYSTEM]: Loading sweeper vehicles...");
+    LoadSweeperVehicles();
+    printf("[SYSTEM]: Sweeper vehicles loaded successfully.");
+
+    print("[SYSTEM]: Loading player BOLOs...");
+    LoadPBolos();
+    printf("[SYSTEM]: Player BOLOs loaded successfully.");
+
+    print("[SYSTEM]: Loading vehicle BOLOs...");
+    LoadVBolos();
+    printf("[SYSTEM]: Vehicle BOLOs loaded successfully.");
+
+    print("[SYSTEM]: Loading garbage locations...");
+    LoadGarbages();
+    printf("[SYSTEM]: Garbage locations loaded successfully.");
+
+    print("[SYSTEM]: Loading faction weapons...");
+    LoadFactionWeapons();
+    printf("[SYSTEM]: Faction weapons loaded successfully.");
+
+    print("[SYSTEM]: Loading black markets...");
+    LoadBlackMarkets();
+    printf("[SYSTEM]: Black markets loaded successfully.");
+
+    print("[SYSTEM]: Loading faction skins...");
+    LoadFactionSkins();
+    printf("[SYSTEM]: Faction skins loaded successfully.");
+
+    print("[SYSTEM]: Loading furniture...");
+    LoadFurniture();
+    printf("[SYSTEM]: Furniture loaded successfully.");
+
+    print("[SYSTEM]: Loading radio stations...");
+    LoadRadioStations();
+
+    print("===============================================");
+    print("[MYSQL]: All database data loaded successfully.");
+    return 1;
 }
 
 stock RandomWeather()
