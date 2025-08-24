@@ -15,7 +15,7 @@
 
 stock SQL_Init()
 {
-    new fileString[128], File: fileHandle = fopen("mysql.cfg", io_read);
+    new fileString[128], File: fileHandle = fopen("scriptfiles/mysql.cfg", io_read);
 
 	while(fread(fileHandle, fileString, sizeof(fileString))) 
 	{
