@@ -80,7 +80,6 @@ function OnTruckerPositionsLoaded()
         cache_get_value_float(0, "MetalX", MetalX);
         cache_get_value_float(0, "MetalY", MetalY);
         cache_get_value_float(0, "MetalZ", MetalZ);
-        printf("[SYSTEM] Truck positions loaded...");
     }
     else
     {
