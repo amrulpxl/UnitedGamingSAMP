@@ -15,49 +15,65 @@
 
 stock SQL_Init()
 {
-    new fileString[128], File: fileHandle = fopen("scriptfiles/mysql.cfg", io_read);
+    print("==========================================================");
+    print("[MYSQL]: Initializing MySQL connection...");
+    print("[MYSQL]: Reading configuration file...");
+	print("==========================================================");
+    new fileString[128], File: fileHandle = fopen("mysql.cfg", io_read);
+    if(!fileHandle)
+    {
+        print("[ERROR] mysql.cfg not found! Cannot start server.");
+        SendRconCommand("exit");
+        return 0;
+    }
+    
+    while(fread(fileHandle, fileString, sizeof(fileString))) 
+    {
+        if(ini_GetValue(fileString, "HOST", MYSQL_HOST, sizeof(MYSQL_HOST))) continue;
+        if(ini_GetValue(fileString, "DB", MYSQL_DATABASE, sizeof(MYSQL_DATABASE))) continue;
+        if(ini_GetValue(fileString, "USER", MYSQL_USER, sizeof(MYSQL_USER))) continue;
+        if(ini_GetValue(fileString, "PASS", MYSQL_PASSWORD, sizeof(MYSQL_PASSWORD))) continue;
+        if(ini_GetValue(fileString, "SERVER_PASS", SERVER_PASSWORD, sizeof(SERVER_PASSWORD))) continue;
+        if(ini_GetInt(fileString, "DEBUG", GAMEMODE_DEBUG)) continue;
+    }
+    fclose(fileHandle);
+    print("[MYSQL]: Configuration file loaded successfully.");
 
-	while(fread(fileHandle, fileString, sizeof(fileString))) 
-	{
-		if(ini_GetValue(fileString, "HOST", MYSQL_HOST, sizeof(MYSQL_HOST))) continue;
-		if(ini_GetValue(fileString, "DB", MYSQL_DATABASE, sizeof(MYSQL_DATABASE))) continue;
-		if(ini_GetValue(fileString, "USER", MYSQL_USER, sizeof(MYSQL_USER))) continue;
-		if(ini_GetValue(fileString, "PASS", MYSQL_PASSWORD, sizeof(MYSQL_PASSWORD))) continue;
-		if(ini_GetValue(fileString, "SERVER_PASS", SERVER_PASSWORD, sizeof(SERVER_PASSWORD))) continue;
-		if(ini_GetInt(fileString, "DEBUG", GAMEMODE_DEBUG)) continue;
-	}
-	fclose(fileHandle);
-
+    printf("[MYSQL]: Connecting to database - Host: %s, DB: %s, User: %s", MYSQL_HOST, MYSQL_DATABASE, MYSQL_USER);
+    
     new MySQLOpt: option_id = mysql_init_options();
+    mysql_set_option(option_id, AUTO_RECONNECT, true);
 
-	mysql_set_option(option_id, AUTO_RECONNECT, true); // it automatically reconnects when loosing connection to mysql server
+    g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, option_id);
+    if (g_SQL == MYSQL_INVALID_HANDLE || mysql_errno(g_SQL) != 0)
+    {
+        new str[128];
+        mysql_error(str, sizeof(str));
+        printf("[ERROR] MySQL connection failed! Host: %s - DB: %s - User: %s", MYSQL_HOST, MYSQL_DATABASE, MYSQL_USER);
+        printf("[ERROR] %s", str);
+        printf("[ERROR] Error number: %d", mysql_errno(g_SQL));
+        print("[ERROR] Server will shutdown due to database connection failure.");
+        SendRconCommand("exit");
+        return 0;
+    }
 
-	g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, option_id); // AUTO_RECONNECT is enabled for this connection handle only
-	if (g_SQL == MYSQL_INVALID_HANDLE)
-	{
-		printf("[ERROR] Fatal Error! There was an invalid Handle.");
-		printf("[ERROR] Error number: %d", mysql_errno(g_SQL));
-		SendRconCommand("exit"); // close the server if there is no connection
-		return 0;
-	}
-
-	if (mysql_errno(g_SQL) != 0)
-	{
-		new str[128];
-		mysql_error(str, sizeof(str));
-		printf("[ERROR] Fatal Error! Could not connect to MySQL: Host %s - DB: %s - User: %s", MYSQL_HOST, MYSQL_DATABASE, MYSQL_USER);
-		print("[ERROR] Note: Make sure that you have provided the correct connection credentials.");
-		printf("[ERROR] Error number: %d", mysql_errno(g_SQL));
-		SendRconCommand("exit"); // close the server if there is no connection
-		return 0;
-	}
-
-	// Enable all logs if the gamemode is running in debug mode, else disable all logs.
-	if(GAMEMODE_DEBUG == 1)
-	{
-		mysql_log(ERROR|WARNING);
-	}
-	else mysql_log(NONE);
+    print("[MYSQL]: Setting up logging configuration...");
+    if(GAMEMODE_DEBUG == 1) 
+    {
+        mysql_log(ERROR | WARNING);
+        print("[MYSQL]: Debug mode enabled - MySQL errors and warnings will be logged.");
+    }
+    else 
+    {
+        mysql_log(NONE);
+        print("[MYSQL]: Production mode - MySQL logging disabled.");
+    }
+	print("==========================================================");
+    print("[MYSQL]: Connection established successfully.");
+    print("[MYSQL]: Triggering database data loading...");
+	print("==========================================================");
+	
+    OnSQLConnected();
     return 1;
 }
 
